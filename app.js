@@ -2,6 +2,8 @@
 
 // الملفات موجودة في نفس المجلد مع index.html
 const URL = "";
+const URL = "";
+model = await tmImage.load(URL + "model.json", URL + "metadata.json");
 
 let model, webcam;
 
@@ -47,3 +49,4 @@ async function loop() {
 document.getElementById("startCamera").addEventListener("click", () => {
   init();
 });
+
