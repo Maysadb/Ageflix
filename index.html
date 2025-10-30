@@ -2,38 +2,26 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Ageflix - Home</title>
-<link rel="stylesheet" href="style.css">
+<title>Ageflix - Age Detection</title>
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
 </head>
 <body>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="movies-kid.html">Kid</a>
-  <a href="movies-adult.html">Adult</a>
-  <a href="movies-senior.html">Senior</a>
-  <a href="about.html">About</a>
-</nav>
+<h1>Age Detection</h1>
+<div id="webcam-container"></div>
+<button id="detectBtn">Detect Age</button>
+<p id="ageResult"></p>
 
-<div class="container">
-  <h1>Welcome to Ageflix</h1>
-  <p>Let’s detect your age and recommend movies!</p>
-
-  <div id="webcam-container"></div>
-  <button id="detectBtn">Detect Age</button>
-
-  <p id="ageResult"></p>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
 <script>
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/"; // رابط الموديل
+
 let model, webcam, maxPredictions;
 
-async function initTM() {
+async function init() {
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
+  
   model = await tmImage.load(modelURL, metadataURL);
   maxPredictions = model.getTotalClasses();
 
@@ -53,19 +41,21 @@ async function loop() {
 document.getElementById("detectBtn").addEventListener("click", async () => {
   const prediction = await model.predict(webcam.canvas);
   let highest = prediction[0];
-  prediction.forEach(p => {
-    if(p.probability > highest.probability) highest = p;
-  });
+  for(let i=0;i<prediction.length;i++){
+    if(prediction[i].probability > highest.probability){
+      highest = prediction[i];
+    }
+  }
+
   document.getElementById("ageResult").textContent = `Detected Age Group: ${highest.className}`;
-  
+
   // Redirect based on age
   if(highest.className.toLowerCase() === "kid") window.location.href = "movies-kid.html";
   else if(highest.className.toLowerCase() === "adult") window.location.href = "movies-adult.html";
   else if(highest.className.toLowerCase() === "senior") window.location.href = "movies-senior.html";
 });
 
-initTM();
+init();
 </script>
-
 </body>
 </html>
