@@ -18,35 +18,20 @@
     p { color: #ccc; margin-top: 0; margin-bottom: 15px; }
     video { border-radius: 10px; margin-top: 15px; border: 2px solid #444; }
     #status { margin-top: 15px; font-size: 18px; }
-    #manualSelect { display: none; margin-top: 20px; }
-    select, button { padding: 10px; margin: 5px; border-radius: 6px; border: none; font-size: 16px; }
-    button { background: #e50914; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
-  
   <h1>🎬 مرحباً بك في AgeFlix</h1>
-  <p>سيتم التعرّف على فئتك العمرية تلقائيًا لتظهر لك الأفلام المناسبة</p>
-
+  <p>جارٍ محاولة استخدام الكاميرا تلقائيًا...</p>
   <video id="webcam" width="320" height="240" autoplay muted playsinline></video>
-  <div id="status">📸 جارٍ تحميل النموذج...</div>
-
-  <div id="manualSelect">
-    <p>⚠️ لم يتم السماح بالكاميرا. يمكنك اختيار فئتك يدويًا:</p>
-    <select id="ageGroup">
-      <option value="kids.html">👶 طفل (Kid)</option>
-      <option value="adult.html">🧑 بالغ (Adult)</option>
-      <option value="senior.html">👴 كبير السن (Senior)</option>
-    </select>
-    <button onclick="manualRedirect()">اذهب</button>
-  </div>
+  <div id="status">📸 جاري تحميل النموذج...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
   <script>
     const URL = "./model/";
     let model, webcam;
 
-    async function init() {
+    async function initCamera() {
       try {
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
@@ -54,16 +39,18 @@
         model = await tmImage.load(modelURL, metadataURL);
 
         webcam = new tmImage.Webcam(320, 240, true);
+
         await webcam.setup(); // محاولة طلب الكاميرا
         await webcam.play();
         document.getElementById("webcam").appendChild(webcam.canvas);
         document.getElementById("status").innerText = "✅ الكاميرا تعمل، جاري التعرّف...";
+
         window.requestAnimationFrame(loop);
       } catch (err) {
         console.error("Camera error:", err);
         document.getElementById("status").innerText = "❌ لم يتم السماح بالكاميرا.";
-        document.getElementById("manualSelect").style.display = "block";
-        alert("⚠️ لم يتم السماح بالكاميرا.\nيمكنك اختيار الفئة يدويًا من القائمة.");
+        alert("⚠️ لم يتم السماح بالكاميرا. الرجاء السماح بالكاميرا لإكمال العرض.\n\nستتم إعادة المحاولة تلقائيًا بعد ثانيتين.");
+        setTimeout(initCamera, 2000); // إعادة المحاولة بعد ثانيتين
       }
     }
 
@@ -90,13 +77,8 @@
       }
     }
 
-    function manualRedirect() {
-      const page = document.getElementById("ageGroup").value;
-      window.location.href = page;
-    }
-
-    init();
+    // بدء محاولة تشغيل الكاميرا تلقائيًا
+    initCamera();
   </script>
 </body>
 </html>
-
