@@ -1,4 +1,3 @@
-/* ألوان أسود/أحمر مثل Netflix */
 body {
   margin: 0;
   font-family: 'Arial', sans-serif;
@@ -17,7 +16,7 @@ header {
 .logo {
   font-size: 28px;
   font-weight: bold;
-  color: #e50914; /* أحمر Netflix */
+  color: #e50914;
 }
 
 nav a {
