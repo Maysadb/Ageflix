@@ -14,39 +14,13 @@
       margin: 0;
       padding: 20px;
     }
-    h1 {
-      margin-bottom: 5px;
-    }
-    p {
-      color: #ccc;
-      margin-top: 0;
-      margin-bottom: 15px;
-    }
-    video {
-      border-radius: 10px;
-      margin-top: 15px;
-      border: 2px solid #444;
-    }
-    #status {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-    #manualSelect {
-      display: none;
-      margin-top: 20px;
-    }
-    select, button {
-      padding: 10px;
-      margin: 5px;
-      border-radius: 6px;
-      border: none;
-      font-size: 16px;
-    }
-    button {
-      background: #e50914;
-      color: white;
-      cursor: pointer;
-    }
+    h1 { margin-bottom: 5px; }
+    p { color: #ccc; margin-top: 0; margin-bottom: 15px; }
+    video { border-radius: 10px; margin-top: 15px; border: 2px solid #444; }
+    #status { margin-top: 15px; font-size: 18px; }
+    #manualSelect { display: none; margin-top: 20px; }
+    select, button { padding: 10px; margin: 5px; border-radius: 6px; border: none; font-size: 16px; }
+    button { background: #e50914; color: white; cursor: pointer; }
   </style>
 </head>
 <body>
@@ -57,7 +31,7 @@
   <div id="status">📸 جارٍ تحميل النموذج...</div>
 
   <div id="manualSelect">
-    <p>لم يتم السماح بالكاميرا. يمكنك اختيار فئتك يدويًا:</p>
+    <p>⚠️ لم يتم السماح بالكاميرا. يمكنك اختيار فئتك يدويًا:</p>
     <select id="ageGroup">
       <option value="kids.html">👶 طفل (Kid)</option>
       <option value="adult.html">🧑 بالغ (Adult)</option>
@@ -66,7 +40,6 @@
     <button onclick="manualRedirect()">اذهب</button>
   </div>
 
-  <!-- مكتبة Teachable Machine -->
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
   <script>
     const URL = "./model/";
@@ -80,7 +53,7 @@
         model = await tmImage.load(modelURL, metadataURL);
 
         webcam = new tmImage.Webcam(320, 240, true);
-        await webcam.setup(); // يطلب إذن الكاميرا
+        await webcam.setup(); // محاولة طلب الكاميرا
         await webcam.play();
         document.getElementById("webcam").appendChild(webcam.canvas);
         document.getElementById("status").innerText = "✅ الكاميرا تعمل، جاري التعرّف...";
@@ -89,7 +62,7 @@
         console.error("Camera error:", err);
         document.getElementById("status").innerText = "❌ لم يتم السماح بالكاميرا.";
         document.getElementById("manualSelect").style.display = "block";
-        alert("⚠️ لم يتم السماح بالكاميرا.\nاذهبي إلى إعدادات المتصفح > الكاميرا > السماح، ثم أعيدي تحميل الصفحة.\n\nأو اختاري فئتك يدويًا من القائمة بالأسفل.");
+        alert("⚠️ لم يتم السماح بالكاميرا.\nيمكنك اختيار الفئة يدويًا من القائمة.");
       }
     }
 
@@ -103,7 +76,7 @@
       const predictions = await model.predict(webcam.canvas);
       predictions.sort((a, b) => b.probability - a.probability);
       const top = predictions[0];
-      document.getElementById("status").innerText = `الفئة: ${top.className} (ثقة ${(top.probability * 100).toFixed(1)}%)`;
+      document.getElementById("status").innerText = `الفئة: ${top.className} (ثقة ${(top.probability*100).toFixed(1)}%)`;
 
       if (top.probability > 0.85) {
         if (top.className.toLowerCase().includes("kid")) {
