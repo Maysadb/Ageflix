@@ -35,8 +35,21 @@
 const URL = "model/"; // مجلد الموديل على GitHub
 let model, webcam;
 
+// تحميل الموديل والتأكد من نجاحه
+async function loadModel() {
+  try {
+    model = await tmImage.load(URL + "model.json", URL + "metadata.json");
+    console.log("Model loaded successfully");
+  } catch (error) {
+    console.error("Failed to load the model:", error);
+    alert("Error loading model. Check console and make sure model folder exists with correct files.");
+  }
+}
+
+// بدء الكاميرا والتنبؤ
 async function init() {
-  model = await tmImage.load(URL + "model.json", URL + "metadata.json");
+  await loadModel();
+
   webcam = new tmImage.Webcam(320, 240, true);
   await webcam.setup();
   webcam.play();
@@ -44,6 +57,7 @@ async function init() {
   window.requestAnimationFrame(loop);
 }
 
+// حلقة التنبؤ المستمر
 async function loop() {
   webcam.update();
   const prediction = await model.predict(webcam.canvas);
