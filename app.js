@@ -33,6 +33,10 @@ async function init() {
     alert("❌ Could not access webcam. تأكد من استخدام HTTPS أو localhost.");
   }
 }
+document.getElementById("startCamera").addEventListener("click", () => {
+  alert("Button clicked ✅"); // ← اختبار
+  init();
+});
 
 // حلقة التنبؤ المستمرة
 async function loop() {
@@ -49,4 +53,5 @@ async function loop() {
 document.getElementById("startCamera").addEventListener("click", () => {
   init();
 });
+
 
