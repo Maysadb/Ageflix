@@ -4,17 +4,58 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ageflix - Home</title>
+
+<!-- مكتبات Teachable Machine -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+
 <style>
-body { background: black; color: white; font-family: sans-serif; text-align:center; margin:0; padding:0;}
-nav { display:flex; justify-content:center; flex-wrap:wrap; background:#111; padding:10px;}
-nav a { margin: 5px 10px; color: red; text-decoration:none; font-weight:bold; font-size:16px;}
-h1 { font-size:24px; margin-top:20px;}
-p { font-size:18px;}
-#webcam-container canvas { margin-top:20px; border: 3px solid red; width: 90%; max-width:480px; height:auto; }
-button { margin-top: 15px; padding: 15px 25px; background:red; color:white; border:none; cursor:pointer; font-size:18px; border-radius:8px;}
-#ageResult { margin-top:20px; font-size:20px; font-weight:bold; }
+body {
+  background: #000;
+  color: #fff;
+  font-family: Arial, sans-serif;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+nav {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  background: #111;
+  padding: 10px;
+}
+nav a {
+  margin: 5px 10px;
+  color: red;
+  text-decoration: none;
+  font-weight: bold;
+  font-size: 16px;
+}
+h1 { font-size: 24px; margin-top: 20px; }
+p { font-size: 18px; }
+#webcam-container canvas {
+  margin-top: 20px;
+  border: 3px solid red;
+  width: 90%;
+  max-width: 480px;
+  height: auto;
+}
+button {
+  margin-top: 15px;
+  padding: 15px 25px;
+  background: red;
+  color: white;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+  border-radius: 8px;
+}
+#ageResult {
+  margin-top: 20px;
+  font-size: 20px;
+  font-weight: bold;
+}
 </style>
 </head>
 <body>
@@ -41,43 +82,60 @@ const metadataURL = "https://teachablemachine.withgoogleusercontent.com/models/U
 let model, webcam;
 
 async function init() {
-    console.log("Initializing...");
+  console.log("🔄 Initializing...");
+  try {
     model = await tmImage.load(modelURL, metadataURL);
-    console.log("Model loaded!");
+    console.log("✅ Model loaded successfully!");
 
-    webcam = new tmImage.Webcam(480, 360, true); // حجم مناسب للجوال
-    await webcam.setup({ facingMode: "user" }); 
+    webcam = new tmImage.Webcam(480, 360, true);
+    await webcam.setup({ facingMode: "user" }); // الكاميرا الأمامية للجوال
     await webcam.play();
     document.getElementById("webcam-container").appendChild(webcam.canvas);
-
     window.requestAnimationFrame(loop);
+  } catch (err) {
+    console.error("❌ Error initializing Teachable Machine:", err);
+    alert("Failed to load model or access camera. Check console for details.");
+  }
 }
 
 async function loop() {
-    webcam.update();
-    window.requestAnimationFrame(loop);
+  webcam.update();
+  window.requestAnimationFrame(loop);
 }
 
 document.getElementById("detectBtn").addEventListener("click", async () => {
-    console.log("Detect button clicked");
+  alert("✅ Button works!");
+  console.log("▶️ Detect button clicked");
+  if (!model) {
+    alert("Model not loaded yet!");
+    return;
+  }
+  try {
     const prediction = await model.predict(webcam.canvas);
     console.log("Predictions:", prediction);
-
     let highest = prediction[0];
-    for(let i=1;i<prediction.length;i++){
-        if(prediction[i].probability > highest.probability) highest = prediction[i];
+    for (let i = 1; i < prediction.length; i++) {
+      if (prediction[i].probability > highest.probability)
+        highest = prediction[i];
     }
-
-    document.getElementById("ageResult").textContent = "Detected Age Group: " + highest.className;
+    document.getElementById("ageResult").textContent =
+      "Detected Age Group: " + highest.className;
     console.log("Highest:", highest.className);
 
-    if(highest.className.toLowerCase() === "kid") window.location.href = "movies-kid.html";
-    else if(highest.className.toLowerCase() === "adult") window.location.href = "movies-adult.html";
-    else if(highest.className.toLowerCase() === "senior") window.location.href = "movies-senior.html";
+    // التوجيه حسب الفئة
+    if (highest.className.toLowerCase() === "kid")
+      window.location.href = "movies-kid.html";
+    else if (highest.className.toLowerCase() === "adult")
+      window.location.href = "movies-adult.html";
+    else if (highest.className.toLowerCase() === "senior")
+      window.location.href = "movies-senior.html";
+  } catch (err) {
+    console.error("❌ Error predicting:", err);
+    alert("Prediction error — check console for details.");
+  }
 });
 
 init();
 </script>
-
 </body>
 </html>
