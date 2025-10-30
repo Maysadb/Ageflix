@@ -1,209 +1,71 @@
-<!doctype html>
-<html lang="ar">
+<!DOCTYPE html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <title>تصنيف عمر وجلب أفلام حسب الفئة</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <style>
-    body { font-family: Arial, Tahoma; direction: rtl; padding: 12px; }
-    #video-container { display:flex; gap:12px; align-items:center; }
-    video { border:1px solid #ccc; width:320px; height:240px; background:#000; }
-    .movies { margin-top:16px; display:flex; flex-wrap:wrap; gap:10px; }
-    .movie { border:1px solid #ddd; padding:8px; width:200px; border-radius:6px; }
-    #consent { margin-top:10px; }
-  </style>
+<meta charset="UTF-8">
+<title>Ageflix - Home</title>
+<link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>عرض أفلام حسب العمر (مع كاميرا)</h1>
 
-  <div id="video-container">
-    <video id="webcam" autoplay playsinline></video>
-    <div>
-      <div>الفئة المكتشفة: <strong id="detected">—</strong></div>
-      <div>الثقة: <strong id="confidence">—</strong></div>
-      <div id="consent">
-        <label><input id="allowCam" type="checkbox"> أوافق على تشغيل الكاميرا لتحديد الفئة العمرية</label>
-      </div>
-      <div style="margin-top:8px;">
-        <button id="startBtn">تشغيل الكشف</button>
-        <button id="stopBtn" disabled>إيقاف</button>
-      </div>
-    </div>
-  </div>
+<nav>
+  <a href="index.html">Home</a>
+  <a href="movies-kid.html">Kid</a>
+  <a href="movies-adult.html">Adult</a>
+  <a href="movies-senior.html">Senior</a>
+  <a href="about.html">About</a>
+</nav>
 
-  <h3>الأفلام المتاحة</h3>
-  <div class="movies" id="moviesList"></div>
+<div class="container">
+  <h1>Welcome to Ageflix</h1>
+  <p>Let’s detect your age and recommend movies!</p>
 
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <div id="webcam-container"></div>
+  <button id="detectBtn">Detect Age</button>
+
+  <p id="ageResult"></p>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
 <script>
-  // غيّر URL لموديلك
-  const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/"; // رابط الموديل
+let model, webcam, maxPredictions;
+
+async function initTM() {
   const modelURL = URL + "model.json";
   const metadataURL = URL + "metadata.json";
+  model = await tmImage.load(modelURL, metadataURL);
+  maxPredictions = model.getTotalClasses();
 
-  let model, maxPredictions;
-  let webcamStream;
-  const video = document.getElementById('webcam');
-  const detectedEl = document.getElementById('detected');
-  const confidenceEl = document.getElementById('confidence');
-  const startBtn = document.getElementById('startBtn');
-  const stopBtn = document.getElementById('stopBtn');
-  const allowCam = document.getElementById('allowCam');
+  webcam = new tmImage.Webcam(320, 240, true);
+  await webcam.setup();
+  await webcam.play();
+  document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-  // مثال بيانات أفلام (كل فيلم له ageAllowed: "kid","teen","adult")
-  const movies = [
-    {title: "فيلم أطفال ممتع", ageAllowed: "kid", year: 2023},
-    {title: "مغامرات للمراهقين", ageAllowed: "teen", year: 2022},
-    {title: "فيلم للكبار فقط", ageAllowed: "adult", year: 2021},
-    {title: "عائلة ومرح", ageAllowed: "kid", year: 2020},
-    {title: "رومانسية للمراهقين", ageAllowed: "teen", year: 2019}
-  ];
+  window.requestAnimationFrame(loop);
+}
 
-  function renderMovies(filtered) {
-    const container = document.getElementById('moviesList');
-    container.innerHTML = '';
-    if(filtered.length===0){
-      container.innerHTML = "<div>لا يوجد محتوى لهذه الفئة</div>";
-      return;
-    }
-    filtered.forEach(m=>{
-      const el = document.createElement('div');
-      el.className = 'movie';
-      el.innerHTML = `<strong>${m.title}</strong><div>الفئة: ${m.ageAllowed}</div><div>سنة: ${m.year}</div>`;
-      container.appendChild(el);
-    });
-  }
+async function loop() {
+  webcam.update();
+  window.requestAnimationFrame(loop);
+}
 
-  // عرض كل الأفلام بالبداية
-  renderMovies(movies);
-
-  async function initModel(){
-    model = await tmImage.load(modelURL, metadataURL);
-    maxPredictions = model.getTotalClasses();
-    console.log("Model loaded, classes:", maxPredictions);
-  }
-
-  async function startWebcam(){
-    if(!allowCam.checked){
-      alert("يرجى الموافقة على تشغيل الكاميرا أولاً.");
-      return;
-    }
-    try {
-      webcamStream = await navigator.mediaDevices.getUserMedia({ video: { width: 640, height: 480 }, audio: false });
-      video.srcObject = webcamStream;
-      await video.play();
-      stopBtn.disabled = false;
-      startBtn.disabled = true;
-      runPredictionLoop();
-    } catch (err) {
-      alert("فشل تشغيل الكاميرا: " + (err.message || err));
-    }
-  }
-
-  function stopWebcam(){
-    if(webcamStream){
-      webcamStream.getTracks().forEach(t=>t.stop());
-      webcamStream = null;
-    }
-    video.pause();
-    video.srcObject = null;
-    stopBtn.disabled = true;
-    startBtn.disabled = false;
-    detectedEl.textContent = "—";
-    confidenceEl.textContent = "—";
-    // اعرض كل الأفلام عند الإيقاف
-    renderMovies(movies);
-  }
-
-  // تحويل تسمية الموديل إلى فئات عمرية موقعنا
-  function mapLabelToAgeGroup(label){
-    // افتراض: الموديل يعطي لابل مثل "0-6", "7-12", "13-17", "18+" أو قد تكون "kid","teen","adult"
-    label = label.toLowerCase();
-    if(label.includes('kid') || label.match(/\b0|1|2|3|4|5|6|child|children\b/)) return 'kid';
-    if(label.includes('teen') || label.match(/\b13|14|15|16|17|\bteen\b/)) return 'teen';
-    if(label.includes('adult') || label.includes('18') || label.includes('18+')) return 'adult';
-    // افتراض افتراضي:
-    if(label.match(/\d+/)){
-      const n = parseInt(label.match(/\d+/)[0]);
-      if(n <= 12) return 'kid';
-      if(n <= 17) return 'teen';
-      return 'adult';
-    }
-    // fallback
-    return label;
-  }
-
-  let running = false;
-  const CONFIDENCE_THRESHOLD = 0.65; // غيّره حسب جودة موديلك
-
-  async function runPredictionLoop(){
-    if(!model) await initModel();
-    running = true;
-    async function step(){
-      if(!running) return;
-      // استخدم tmImage.predictElement لو الموديل صورة
-      const prediction = await model.predict(video, false);
-      // ترتيب الاحتمالات حسب أعلى ثقة
-      prediction.sort((a,b)=>b.probability - a.probability);
-      const top = prediction[0];
-      const label = top.className || top.label;
-      const prob = top.probability;
-      detectedEl.textContent = label;
-      confidenceEl.textContent = (prob*100).toFixed(1) + "%";
-
-      // خريطة لعرض الأفلام حسب فئة العمر
-      const ageGroup = mapLabelToAgeGroup(label);
-      if(prob >= CONFIDENCE_THRESHOLD){
-        // فلترة على العميل (يمكن تغييره لطلب للخادم)
-        const filtered = movies.filter(m => {
-          // منطق بسيط: kid يرى kid فقط، teen يرى kid+teen، adult يرى الكل
-          if(ageGroup === 'kid') return m.ageAllowed === 'kid';
-          if(ageGroup === 'teen') return m.ageAllowed === 'teen' || m.ageAllowed === 'kid';
-          if(ageGroup === 'adult') return true;
-          return m.ageAllowed === ageGroup;
-        });
-        renderMovies(filtered);
-
-        // --- اختياري: إرسال الفئة للخادم للمصادقة النهائيّة ---
-        // fetch('/api/age-verify', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({ageGroup,prob})});
-      } else {
-        // الثقة قليلة => عرض خيار يدوي للمستخدم أو اظهار المحتوى الافتراضي
-        document.getElementById('moviesList').innerHTML =
-          `<div>لم يتم التأكد من العمر (الثقة ${(prob*100).toFixed(0)}%). يمكنك اختيار الفئة يدوياً:
-            <div style="margin-top:8px;">
-              <button onclick="manualSelect('kid')">طفل</button>
-              <button onclick="manualSelect('teen')">مراهق</button>
-              <button onclick="manualSelect('adult')">بالغ</button>
-            </div>
-          </div>`;
-      }
-
-      // استدعاء مجدّد بعد 800ms (قابل للتغيير)
-      setTimeout(step, 800);
-    }
-    step();
-  }
-
-  function manualSelect(group){
-    const filtered = movies.filter(m => {
-      if(group === 'kid') return m.ageAllowed === 'kid';
-      if(group === 'teen') return m.ageAllowed === 'teen' || m.ageAllowed === 'kid';
-      if(group === 'adult') return true;
-    });
-    renderMovies(filtered);
-    detectedEl.textContent = `مختار يدوياً: ${group}`;
-    confidenceEl.textContent = `—`;
-  }
-
-  // أحداث الأزرار
-  startBtn.addEventListener('click', startWebcam);
-  stopBtn.addEventListener('click', ()=>{
-    running = false;
-    stopWebcam();
+document.getElementById("detectBtn").addEventListener("click", async () => {
+  const prediction = await model.predict(webcam.canvas);
+  let highest = prediction[0];
+  prediction.forEach(p => {
+    if(p.probability > highest.probability) highest = p;
   });
+  document.getElementById("ageResult").textContent = `Detected Age Group: ${highest.className}`;
+  
+  // Redirect based on age
+  if(highest.className.toLowerCase() === "kid") window.location.href = "movies-kid.html";
+  else if(highest.className.toLowerCase() === "adult") window.location.href = "movies-adult.html";
+  else if(highest.className.toLowerCase() === "senior") window.location.href = "movies-senior.html";
+});
 
-  // تهيئة موديل عند التحميل (تحميل مسبق)
-  initModel().catch(e=>console.error("Failed to load model:", e));
+initTM();
 </script>
+
 </body>
 </html>
