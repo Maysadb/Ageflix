@@ -1,35 +1,49 @@
-// سلايدر تلقائي لكل عناصر .movies-slider و .team-slider
-function autoSlideSliders() {
-  const sliders = document.querySelectorAll('.movies-slider, .team-slider');
-  sliders.forEach(slider => {
-    let scrollAmount = 0;
-    let step = 1.5; // سرعة الحركة
-    function slide() {
-      if (!slider) return;
-      scrollAmount += step;
-      if (scrollAmount >= slider.scrollWidth - slider.clientWidth || scrollAmount <= 0) step = -step;
-      slider.scrollLeft = scrollAmount;
-      requestAnimationFrame(slide);
-    }
-    slide();
-  });
-}
+// === app.js ===
 
-window.addEventListener('load', autoSlideSliders);
+// الملفات موجودة داخل مجلد model
+const URL = "model/";
 
-async function init() {
+let model, webcam;
+
+// تحميل الموديل
+async function loadModel() {
   try {
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
     console.log("Model loaded successfully");
   } catch (error) {
     console.error("Failed to load the model:", error);
-    alert("Error loading model. Check console.");
+    alert("❌ Error loading model. تأكد أن model.json وmetadata.json وweights.bin موجودة في مجلد 'model'");
   }
+}
 
-  webcam = new tmImage.Webcam(320, 240, true);
-  await webcam.setup();
-  webcam.play();
-  document.getElementById("webcam-container").appendChild(webcam.canvas);
+// تشغيل الكاميرا والتنبؤ
+async function init() {
+  await loadModel();
+
+  try {
+    webcam = new tmImage.Webcam(320, 240, true);
+    await webcam.setup();
+    webcam.play();
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+    window.requestAnimationFrame(loop);
+  } catch (err) {
+    console.error("Webcam not accessible:", err);
+    alert("❌ Could not access webcam. تأكد من استخدام HTTPS أو localhost.");
+  }
+}
+
+// حلقة التنبؤ المستمرة
+async function loop() {
+  webcam.update();
+  const prediction = await model.predict(webcam.canvas);
+
+  const top = prediction.reduce((prev, curr) => (prev.probability > curr.probability ? prev : curr));
+  document.getElementById("ageResult").innerText = `Detected Age: ${top.className}`;
+
   window.requestAnimationFrame(loop);
 }
-const URL = "model/";
+
+// ربط زر Start Camera
+document.getElementById("startCamera").addEventListener("click", () => {
+  init();
+});
