@@ -1,52 +1,49 @@
 // === app.js ===
 
-// مسار مجلد الموديل على GitHub
-const URL = "model/"; // تأكدي أن هذا المجلد بجانب index.html
+// بما أن الملفات موجودة في نفس المجلد مع index.html
+const URL = ""; // لا حاجة لمجلد
 
 let model, webcam;
 
-// تحميل الموديل والتأكد من نجاحه
+// تحميل الموديل والتأكد من النجاح
 async function loadModel() {
   try {
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
     console.log("Model loaded successfully");
   } catch (error) {
     console.error("Failed to load the model:", error);
-    alert("❌ Error loading model. Check that the 'model' folder exists with model.json, metadata.json, and weights.bin");
+    alert("❌ Error loading model. تأكد أن model.json وmetadata.json وweights.bin موجودة في نفس المجلد مع index.html");
   }
 }
 
 // إعداد الكاميرا وتشغيل التنبؤ
 async function init() {
-  await loadModel(); // تحميل الموديل أولاً
+  await loadModel();
 
   try {
-    webcam = new tmImage.Webcam(320, 240, true); // width, height, flip
-    await webcam.setup(); // طلب إذن الكاميرا
+    webcam = new tmImage.Webcam(320, 240, true);
+    await webcam.setup();
     webcam.play();
     document.getElementById("webcam-container").appendChild(webcam.canvas);
     window.requestAnimationFrame(loop);
   } catch (err) {
     console.error("Webcam not accessible:", err);
-    alert("❌ Could not access webcam. Make sure you are using HTTPS or localhost.");
+    alert("❌ Could not access webcam. تأكد من استخدام HTTPS أو localhost.");
   }
 }
 
 // حلقة التنبؤ المستمرة
 async function loop() {
-  webcam.update(); // تحديث الصورة
+  webcam.update();
   const prediction = await model.predict(webcam.canvas);
 
-  // أخذ أعلى احتمال
   const top = prediction.reduce((prev, curr) => (prev.probability > curr.probability ? prev : curr));
-
-  // عرض النتيجة
   document.getElementById("ageResult").innerText = `Detected Age: ${top.className}`;
 
-  window.requestAnimationFrame(loop); // استدعاء التكرار
+  window.requestAnimationFrame(loop);
 }
 
-// ربط الزر
+// ربط زر Start Camera
 document.getElementById("startCamera").addEventListener("click", () => {
   init();
 });
