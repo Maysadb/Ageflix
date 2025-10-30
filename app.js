@@ -1,11 +1,11 @@
 // === app.js ===
 
-// بما أن الملفات موجودة في نفس المجلد مع index.html
-const URL = ""; // لا حاجة لمجلد
+// الملفات موجودة في نفس المجلد مع index.html
+const URL = "";
 
 let model, webcam;
 
-// تحميل الموديل والتأكد من النجاح
+// تحميل الموديل
 async function loadModel() {
   try {
     model = await tmImage.load(URL + "model.json", URL + "metadata.json");
@@ -16,7 +16,7 @@ async function loadModel() {
   }
 }
 
-// إعداد الكاميرا وتشغيل التنبؤ
+// تشغيل الكاميرا والتنبؤ
 async function init() {
   await loadModel();
 
@@ -43,7 +43,7 @@ async function loop() {
   window.requestAnimationFrame(loop);
 }
 
-// ربط زر Start Camera
+// ربط الزر
 document.getElementById("startCamera").addEventListener("click", () => {
   init();
 });
