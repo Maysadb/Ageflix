@@ -1,37 +1,69 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ar">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ageflix - Home</title>
-<link rel="stylesheet" href="style.css">
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
-<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AgeFlix - التحقق من العمر</title>
+  <style>
+    body { text-align: center; font-family: sans-serif; direction: rtl; background: #111; color: #fff; }
+    video { border-radius: 10px; margin-top: 20px; }
+    #status { margin-top: 15px; font-size: 18px; }
+  </style>
 </head>
 <body>
-<header>
-  <div class="logo">Ageflix</div>
-  <nav>
-    <a href="index.html">Home</a>
-    <a href="movies-kid.html">Kids</a>
-    <a href="movies-adult.html">Adults</a>
-    <a href="movies-senior.html">Seniors</a>
-    <a href="about.html">About</a>
-  </nav>
-</header>
+  <h1>🎬 مرحباً بك في AgeFlix</h1>
+  <p>سيتم التعرف على فئتك العمرية تلقائياً لتظهر لك الأفلام المناسبة</p>
 
-<main>
-  <div class="hero">
-    <h1>Welcome to Ageflix</h1>
-    <p>Discover movies suitable for your age group!</p>
-    <button id="startCamera" class="btn-red">🎥 Start Camera</button>
-  </div>
+  <video id="webcam" width="320" height="240" autoplay muted playsinline></video>
+  <div id="status">جاري تحميل النموذج...</div>
 
-  <div id="webcam-container" class="webcam-box"></div>
-  <h2 id="ageResult" class="age-text"></h2>
-</main>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+  <script>
+    const URL = "./model/"; // مجلد النموذج اللي نزلتيه
+    let model, webcam;
 
-<script src="app.js"></script>
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      model = await tmImage.load(modelURL, metadataURL);
+      webcam = new tmImage.Webcam(320, 240, true);
+      await webcam.setup();
+      await webcam.play();
+      document.getElementById("webcam").appendChild(webcam.canvas);
+      window.requestAnimationFrame(loop);
+      document.getElementById("status").innerText = "تم التشغيل، جاري التعرّف...";
+    }
+
+    async function loop() {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+      const predictions = await model.predict(webcam.canvas);
+      predictions.sort((a, b) => b.probability - a.probability);
+      const top = predictions[0];
+
+      document.getElementById("status").innerText =
+        `الفئة: ${top.className} (ثقة: ${(top.probability * 100).toFixed(1)}%)`;
+
+      if (top.probability > 0.8) {
+        if (top.className.toLowerCase().includes("kid")) {
+          window.location.href = "kids.html";
+        } else if (top.className.toLowerCase().includes("adult")) {
+          window.location.href = "adult.html";
+        } else if (top.className.toLowerCase().includes("senior")) {
+          window.location.href = "senior.html";
+        }
+      }
+    }
+
+    init().catch(err => {
+      console.error(err);
+      document.getElementById("status").innerText = "حدث خطأ أو لم يتم السماح بالكاميرا.";
+    });
+  </script>
 </body>
 </html>
-
