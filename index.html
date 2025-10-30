@@ -2,14 +2,19 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ageflix - Home</title>
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
 <style>
-body { background: black; color: white; font-family: sans-serif; text-align:center;}
-nav a { margin: 0 10px; color: red; text-decoration:none; font-weight:bold;}
-#webcam-container canvas { margin-top:20px; border: 3px solid red; }
-button { margin-top: 10px; padding: 10px 20px; background:red; color:white; border:none; cursor:pointer;}
+body { background: black; color: white; font-family: sans-serif; text-align:center; margin:0; padding:0;}
+nav { display:flex; justify-content:center; flex-wrap:wrap; background:#111; padding:10px;}
+nav a { margin: 5px 10px; color: red; text-decoration:none; font-weight:bold; font-size:16px;}
+h1 { font-size:24px; margin-top:20px;}
+p { font-size:18px;}
+#webcam-container canvas { margin-top:20px; border: 3px solid red; width: 90%; max-width:480px; height:auto; }
+button { margin-top: 15px; padding: 15px 25px; background:red; color:white; border:none; cursor:pointer; font-size:18px; border-radius:8px;}
+#ageResult { margin-top:20px; font-size:20px; font-weight:bold; }
 </style>
 </head>
 <body>
@@ -36,11 +41,15 @@ const metadataURL = "https://teachablemachine.withgoogleusercontent.com/models/U
 let model, webcam;
 
 async function init() {
+    console.log("Initializing...");
     model = await tmImage.load(modelURL, metadataURL);
-    webcam = new tmImage.Webcam(320, 240, true);
-    await webcam.setup();
+    console.log("Model loaded!");
+
+    webcam = new tmImage.Webcam(480, 360, true); // حجم مناسب للجوال
+    await webcam.setup({ facingMode: "user" }); 
     await webcam.play();
     document.getElementById("webcam-container").appendChild(webcam.canvas);
+
     window.requestAnimationFrame(loop);
 }
 
@@ -50,12 +59,17 @@ async function loop() {
 }
 
 document.getElementById("detectBtn").addEventListener("click", async () => {
+    console.log("Detect button clicked");
     const prediction = await model.predict(webcam.canvas);
+    console.log("Predictions:", prediction);
+
     let highest = prediction[0];
     for(let i=1;i<prediction.length;i++){
         if(prediction[i].probability > highest.probability) highest = prediction[i];
     }
+
     document.getElementById("ageResult").textContent = "Detected Age Group: " + highest.className;
+    console.log("Highest:", highest.className);
 
     if(highest.className.toLowerCase() === "kid") window.location.href = "movies-kid.html";
     else if(highest.className.toLowerCase() === "adult") window.location.href = "movies-adult.html";
