@@ -32,3 +32,4 @@ async function init() {
   document.getElementById("webcam-container").appendChild(webcam.canvas);
   window.requestAnimationFrame(loop);
 }
+const URL = "model/";
