@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ageflix - Kids Movies</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="navbar">
+  <div class="logo">Ageflix</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Movies</button>
+      <div class="dropdown-content">
+        <a href="movies-kid.html">Kid</a>
+        <a href="movies-adult.html">Adult</a>
+        <a href="movies-senior.html">Senior</a>
+      </div>
+    </div>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main class="movies-page">
+  <h1>🎬 Kids Movies</h1>
+  <div class="movies-slider" id="moviesSlider"></div>
+</main>
+
+<script>
+const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
+const moviesSlider = document.getElementById("moviesSlider");
+
+async function loadKidMovies() {
+  const url = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&certification_country=US&certification.lte=G&sort_by=popularity.desc&page=1`;
+  const res = await fetch(url);
+  const data = await res.json();
+  displayMovies(data.results);
+}
+
+function displayMovies(movies) {
+  moviesSlider.innerHTML = movies.slice(0,20).map(movie => `
+    <div class="movie-card" onclick="openMovie(${movie.id})">
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+      <h3>${movie.title}</h3>
+    </div>
+  `).join("");
+}
+
+function openMovie(id) {
+  window.location.href = `movie-details.html?id=${id}`;
+}
+
+loadKidMovies();
+</script>
+</body>
+</html>

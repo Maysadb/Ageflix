@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ageflix - Home</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <h1 class="logo">Ageflix</h1>
+  <nav>
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Movies</button>
+      <div class="dropdown-content">
+        <a href="movies-kid.html">Kids</a>
+        <a href="movies-adult.html">Adults</a>
+        <a href="movies-senior.html">Seniors</a>
+      </div>
+    </div>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main class="home">
+  <h2>Welcome to Ageflix</h2>
+  <p>Discover movies suitable for your age group</p>
+  <button id="startCamera">🎥 Start Camera</button>
+  <video id="webcam" autoplay playsinline width="320" height="240" style="display:none;"></video>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+<script src="script.js"></script>
+</body>
+</html>

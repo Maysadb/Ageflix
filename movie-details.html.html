@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ageflix - Movie Details</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="navbar">
+  <div class="logo">Ageflix</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Movies</button>
+      <div class="dropdown-content">
+        <a href="movies-kid.html">Kid</a>
+        <a href="movies-adult.html">Adult</a>
+        <a href="movies-senior.html">Senior</a>
+      </div>
+    </div>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main class="movie-details">
+  <div class="movie-header" id="movieHeader"></div>
+  <div class="movie-info" id="movieInfo"></div>
+  <section class="recommendations">
+    <h2>Recommended Movies</h2>
+    <div class="movies-slider" id="recommendationsGrid"></div>
+  </section>
+</main>
+
+<script>
+const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
+const params = new URLSearchParams(window.location.search);
+const movieId = params.get("id");
+
+async function getMovieDetails() {
+  const movieRes = await fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&append_to_response=videos,credits,recommendations`);
+  const movie = await movieRes.json();
+
+  document.getElementById("movieHeader").style.backgroundImage = `url(https://image.tmdb.org/t/p/original${movie.backdrop_path})`;
+  document.getElementById("movieHeader").innerHTML = `
+    <div class="overlay">
+      <h1>${movie.title}</h1>
+      <p>⭐ ${movie.vote_average.toFixed(1)} / 10</p>
+    </div>
+  `;
+
+  const trailer = movie.videos.results.find(v => v.type==="Trailer");
+  const actors = movie.credits.cast.slice(0,5).map(a=>a.name).join(", ");
+
+  document.getElementById("movieInfo").innerHTML = `
+    <div class="details-content">
+      <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+      <div class="info-text">
+        <h2>${movie.title}</h2>
+        <p>${movie.overview || "No description available."}</p>
+        <p><strong>Actors:</strong> ${actors}</p>
+        ${trailer? `<iframe width="560" height="315" src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>` : ""}
+      </div>
+    </div>
+  `;
+
+  const recommendations = movie.recommendations.results.slice(0,10);
+  document.getElementById("recommendationsGrid").innerHTML = recommendations.map(rec=>`
+    <div class="movie-card" onclick="openMovie(${rec.id})">
+      <img src="https://image.tmdb.org/t/p/w500${rec.poster_path}" alt="${rec.title}">
+      <h3>${rec.title}</h3>
+    </div>
+  `).join("");
+}
+
+function openMovie(id){ window.location.href=`movie-details.html?id=${id}` }
+
+getMovieDetails();
+</script>
+
+</body>
+</html>
