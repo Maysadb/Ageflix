@@ -4,138 +4,57 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ageflix - Home</title>
-
-<!-- مكتبات Teachable Machine -->
+<link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
-
-<style>
-body {
-  background: #000;
-  color: #fff;
-  font-family: Arial, sans-serif;
-  text-align: center;
-  margin: 0;
-  padding: 0;
-}
-nav {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  background: #111;
-  padding: 10px;
-}
-nav a {
-  margin: 5px 10px;
-  color: red;
-  text-decoration: none;
-  font-weight: bold;
-  font-size: 16px;
-}
-h1 { font-size: 24px; margin-top: 20px; }
-p { font-size: 18px; }
-#webcam-container canvas {
-  margin-top: 20px;
-  border: 3px solid red;
-  width: 90%;
-  max-width: 480px;
-  height: auto;
-}
-button {
-  margin-top: 15px;
-  padding: 15px 25px;
-  background: red;
-  color: white;
-  border: none;
-  cursor: pointer;
-  font-size: 18px;
-  border-radius: 8px;
-}
-#ageResult {
-  margin-top: 20px;
-  font-size: 20px;
-  font-weight: bold;
-}
-</style>
 </head>
 <body>
+<header>
+  <div class="logo">Ageflix</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="movies-kid.html">Kids</a>
+    <a href="movies-adult.html">Adults</a>
+    <a href="movies-senior.html">Seniors</a>
+    <a href="about.html">About</a>
+  </nav>
+</header>
 
-<nav>
-  <a href="index.html">Home</a>
-  <a href="movies-kid.html">Kid</a>
-  <a href="movies-adult.html">Adult</a>
-  <a href="movies-senior.html">Senior</a>
-  <a href="about.html">About</a>
-</nav>
+<main>
+  <div class="hero">
+    <h1>Welcome to Ageflix</h1>
+    <p>Discover movies suitable for your age group!</p>
+    <button id="startCamera" class="btn-red">🎥 Start Camera</button>
+  </div>
 
-<h1>Welcome to Ageflix</h1>
-<p>Detect your age and see recommended movies!</p>
-
-<div id="webcam-container"></div>
-<button id="detectBtn">Detect Age</button>
-<p id="ageResult"></p>
+  <div id="webcam-container" class="webcam-box"></div>
+  <h2 id="ageResult" class="age-text"></h2>
+</main>
 
 <script>
-const modelURL = "https://teachablemachine.withgoogleusercontent.com/models/UujRQ_OS4/model.json";
-const metadataURL = "https://teachablemachine.withgoogleusercontent.com/models/UujRQ_OS4/metadata.json";
-
+const URL = "model/"; // مجلد الموديل على GitHub
 let model, webcam;
 
 async function init() {
-  console.log("🔄 Initializing...");
-  try {
-    model = await tmImage.load(modelURL, metadataURL);
-    console.log("✅ Model loaded successfully!");
-
-    webcam = new tmImage.Webcam(480, 360, true);
-    await webcam.setup({ facingMode: "user" }); // الكاميرا الأمامية للجوال
-    await webcam.play();
-    document.getElementById("webcam-container").appendChild(webcam.canvas);
-    window.requestAnimationFrame(loop);
-  } catch (err) {
-    console.error("❌ Error initializing Teachable Machine:", err);
-    alert("Failed to load model or access camera. Check console for details.");
-  }
+  model = await tmImage.load(URL + "model.json", URL + "metadata.json");
+  webcam = new tmImage.Webcam(320, 240, true);
+  await webcam.setup();
+  webcam.play();
+  document.getElementById("webcam-container").appendChild(webcam.canvas);
+  window.requestAnimationFrame(loop);
 }
 
 async function loop() {
   webcam.update();
+  const prediction = await model.predict(webcam.canvas);
+  const top = prediction.reduce((prev, curr) => prev.probability > curr.probability ? prev : curr);
+  document.getElementById("ageResult").innerText = `Detected Age: ${top.className}`;
   window.requestAnimationFrame(loop);
 }
 
-document.getElementById("detectBtn").addEventListener("click", async () => {
-  alert("✅ Button works!");
-  console.log("▶️ Detect button clicked");
-  if (!model) {
-    alert("Model not loaded yet!");
-    return;
-  }
-  try {
-    const prediction = await model.predict(webcam.canvas);
-    console.log("Predictions:", prediction);
-    let highest = prediction[0];
-    for (let i = 1; i < prediction.length; i++) {
-      if (prediction[i].probability > highest.probability)
-        highest = prediction[i];
-    }
-    document.getElementById("ageResult").textContent =
-      "Detected Age Group: " + highest.className;
-    console.log("Highest:", highest.className);
-
-    // التوجيه حسب الفئة
-    if (highest.className.toLowerCase() === "kid")
-      window.location.href = "movies-kid.html";
-    else if (highest.className.toLowerCase() === "adult")
-      window.location.href = "movies-adult.html";
-    else if (highest.className.toLowerCase() === "senior")
-      window.location.href = "movies-senior.html";
-  } catch (err) {
-    console.error("❌ Error predicting:", err);
-    alert("Prediction error — check console for details.");
-  }
+document.getElementById("startCamera").addEventListener("click", () => {
+  init();
 });
-
-init();
 </script>
 </body>
 </html>
