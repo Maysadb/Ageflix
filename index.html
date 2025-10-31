@@ -6,44 +6,56 @@
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
   <style>
-    body { text-align: center; font-family: sans-serif; direction: rtl; }
-    video, canvas { width: 300px; border-radius: 10px; margin-top: 15px; }
-    #label-container { margin-top: 10px; font-size: 20px; color: #333; }
-    button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
+    body { text-align: center; font-family: sans-serif; direction: rtl; background: #f4f4f4; }
+    video, canvas { width: 320px; border-radius: 10px; margin-top: 15px; border: 2px solid #444; }
+    #label-container { margin-top: 10px; font-size: 20px; color: #333; font-weight: bold; }
+    button { padding: 10px 20px; margin-top: 25px; cursor: pointer; font-size: 16px; border-radius: 8px; }
   </style>
 </head>
 <body>
   <h2>تحديد الفئة العمرية</h2>
+  <p>اضغطي الزر أدناه لتفعيل الكاميرا 👇</p>
   <button onclick="init()">تشغيل الكاميرا</button>
   <div id="webcam-container"></div>
   <div id="label-container"></div>
 
   <script>
     const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
-    let model, webcam, labelContainer;
+    let model, webcam, labelContainer, isPredicting = false;
 
     async function init() {
       try {
+        document.getElementById("label-container").innerHTML = "⏳ جاري تشغيل الكاميرا...";
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
 
         model = await tmImage.load(modelURL, metadataURL);
+        webcam = new tmImage.Webcam(320, 320, true);
 
-        webcam = new tmImage.Webcam(300, 300, true); // الكاميرا الأمامية
-        await webcam.setup(); // يطلب الإذن هنا
+        // إعداد الكاميرا وطلب الإذن
+        await webcam.setup({ facingMode: "user" });
         await webcam.play();
 
+        document.getElementById("webcam-container").innerHTML = "";
         document.getElementById("webcam-container").appendChild(webcam.canvas);
         labelContainer = document.getElementById("label-container");
 
+        isPredicting = true;
+        document.getElementById("label-container").innerHTML = "✅ الكاميرا تعمل الآن!";
         window.requestAnimationFrame(loop);
       } catch (err) {
-        alert("⚠️ لم يتم تفعيل الكاميرا. تأكد من إعطاء الإذن للكاميرا في المتصفح.");
         console.error(err);
+        let msg = "⚠️ لم يتم الوصول إلى الكاميرا. ";
+        if (err.name === "NotAllowedError") msg += "يبدو أنك رفضت الإذن، فعّليه من إعدادات المتصفح.";
+        else if (err.name === "NotFoundError") msg += "لم يتم العثور على كاميرا في الجهاز.";
+        else msg += "تأكدي من السماح للموقع باستخدام الكاميرا.";
+        alert(msg);
+        document.getElementById("label-container").innerHTML = msg;
       }
     }
 
     async function loop() {
+      if (!isPredicting) return;
       webcam.update();
       await predict();
       window.requestAnimationFrame(loop);
@@ -63,14 +75,15 @@
 
       labelContainer.innerHTML = `الفئة: ${topClass} (${(topProb * 100).toFixed(1)}%)`;
 
-      // التوجيه حسب الفئة
       if (topProb > 0.9) {
-        if (topClass === "Kid") window.location.href = "kid.html";
-        else if (topClass === "Adult") window.location.href = "adult.html";
-        else if (topClass === "Senior") window.location.href = "senior.html";
+        isPredicting = false;
+        setTimeout(() => {
+          if (topClass === "Kid") window.location.href = "kid.html";
+          else if (topClass === "Adult") window.location.href = "adult.html";
+          else if (topClass === "Senior") window.location.href = "senior.html";
+        }, 1000);
       }
     }
   </script>
 </body>
 </html>
-رز
