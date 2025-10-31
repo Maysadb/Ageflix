@@ -14,17 +14,48 @@
       margin: 0;
       padding: 20px;
     }
+
     h1 { margin-bottom: 5px; }
     p { color: #ccc; margin-top: 0; margin-bottom: 15px; }
-    video { border-radius: 10px; margin-top: 15px; border: 2px solid #444; }
-    #status { margin-top: 15px; font-size: 18px; }
+
+    video {
+      border-radius: 10px;
+      margin-top: 15px;
+      border: 2px solid #444;
+      width: 320px;
+      height: 240px;
+    }
+
+    #status {
+      margin-top: 15px;
+      font-size: 18px;
+    }
+
+    #startBtn {
+      padding: 12px 25px;
+      font-size: 18px;
+      border-radius: 8px;
+      background-color: #e50914;
+      color: white;
+      border: none;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+
+    #startBtn:hover {
+      background-color: #b00610;
+    }
   </style>
 </head>
+
 <body>
   <h1>🎬 مرحباً بك في AgeFlix</h1>
-  <p>جارٍ محاولة استخدام الكاميرا تلقائيًا...</p>
-  <video id="webcam" width="320" height="240" autoplay muted playsinline></video>
-  <div id="status">📸 جاري تحميل النموذج...</div>
+  <p>اضغط على الزر أدناه لتشغيل الكاميرا والتعرّف على فئتك العمرية.</p>
+
+  <button id="startBtn" onclick="initCamera()">📸 تشغيل الكاميرا</button>
+
+  <video id="webcam" autoplay muted playsinline></video>
+  <div id="status">⬆️ بانتظار تشغيل الكاميرا...</div>
 
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
   <script>
@@ -32,25 +63,27 @@
     let model, webcam;
 
     async function initCamera() {
+      document.getElementById("status").innerText = "📸 جاري تشغيل الكاميرا...";
+      document.getElementById("startBtn").style.display = "none";
+
       try {
         const modelURL = URL + "model.json";
         const metadataURL = URL + "metadata.json";
-
         model = await tmImage.load(modelURL, metadataURL);
 
         webcam = new tmImage.Webcam(320, 240, true);
-
-        await webcam.setup(); // محاولة طلب الكاميرا
+        await webcam.setup(); // المستخدم يسمح هنا
         await webcam.play();
-        document.getElementById("webcam").appendChild(webcam.canvas);
-        document.getElementById("status").innerText = "✅ الكاميرا تعمل، جاري التعرّف...";
 
+        const cam = document.getElementById("webcam");
+        cam.srcObject = webcam.stream;
+        document.getElementById("status").innerText = "✅ الكاميرا تعمل، جارٍ التعرّف...";
         window.requestAnimationFrame(loop);
+
       } catch (err) {
         console.error("Camera error:", err);
-        document.getElementById("status").innerText = "❌ لم يتم السماح بالكاميرا.";
-        alert("⚠️ لم يتم السماح بالكاميرا. الرجاء السماح بالكاميرا لإكمال العرض.\n\nستتم إعادة المحاولة تلقائيًا بعد ثانيتين.");
-        setTimeout(initCamera, 2000); // إعادة المحاولة بعد ثانيتين
+        document.getElementById("status").innerText = "❌ لم يتم السماح بالكاميرا. الرجاء إعادة المحاولة.";
+        document.getElementById("startBtn").style.display = "block";
       }
     }
 
@@ -64,7 +97,8 @@
       const predictions = await model.predict(webcam.canvas);
       predictions.sort((a, b) => b.probability - a.probability);
       const top = predictions[0];
-      document.getElementById("status").innerText = `الفئة: ${top.className} (ثقة ${(top.probability*100).toFixed(1)}%)`;
+      document.getElementById("status").innerText =
+        `📊 الفئة: ${top.className} (ثقة ${(top.probability * 100).toFixed(1)}%)`;
 
       if (top.probability > 0.85) {
         if (top.className.toLowerCase().includes("kid")) {
@@ -76,9 +110,6 @@
         }
       }
     }
-
-    // بدء محاولة تشغيل الكاميرا تلقائيًا
-    initCamera();
   </script>
 </body>
 </html>
