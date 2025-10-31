@@ -2,89 +2,43 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AgeFlix - التحقق من العمر</title>
+  <title>Age Detector</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
   <style>
-    body {
-      text-align: center;
-      font-family: "Cairo", sans-serif;
-      direction: rtl;
-      background-color: #0e0e0e;
-      color: #fff;
-      margin: 0;
-      padding: 20px;
-    }
-
-    h1 { margin-bottom: 5px; }
-    p { color: #ccc; margin-top: 0; margin-bottom: 15px; }
-
-    video {
-      border-radius: 10px;
-      margin-top: 15px;
-      border: 2px solid #444;
-      width: 320px;
-      height: 240px;
-    }
-
-    #status {
-      margin-top: 15px;
-      font-size: 18px;
-    }
-
-    #startBtn {
-      padding: 12px 25px;
-      font-size: 18px;
-      border-radius: 8px;
-      background-color: #e50914;
-      color: white;
-      border: none;
-      cursor: pointer;
-      margin-top: 20px;
-    }
-
-    #startBtn:hover {
-      background-color: #b00610;
-    }
+    body { text-align: center; font-family: sans-serif; direction: rtl; }
+    video { width: 300px; border-radius: 10px; margin-top: 15px; }
+    #label-container { margin-top: 10px; font-size: 20px; }
   </style>
 </head>
-
 <body>
-  <h1>🎬 مرحباً بك في AgeFlix</h1>
-  <p>اضغط على الزر أدناه لتشغيل الكاميرا والتعرّف على فئتك العمرية.</p>
+  <h2>تحديد الفئة العمرية</h2>
+  <button type="button" onclick="init()">تشغيل الكاميرا</button>
+  <div><video id="webcam" autoplay playsinline></video></div>
+  <div id="label-container"></div>
 
-  <button id="startBtn" onclick="initCamera()">📸 تشغيل الكاميرا</button>
+  <script type="text/javascript">
+    const URL = "https://teachablemachine.withgoogle.com/models
+      /UujRQ_OS4/";
+    let model, webcam, labelContainer, maxPredictions;
 
-  <video id="webcam" autoplay muted playsinline></video>
-  <div id="status">⬆️ بانتظار تشغيل الكاميرا...</div>
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
 
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
-  <script>
-    const URL = "./model/";
-    let model, webcam;
+      // تحميل النموذج
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
 
-    async function initCamera() {
-      document.getElementById("status").innerText = "📸 جاري تشغيل الكاميرا...";
-      document.getElementById("startBtn").style.display = "none";
+      // تفعيل الكاميرا
+      const flip = true;
+      webcam = new tmImage.Webcam(300, 300, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
 
-      try {
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
-        model = await tmImage.load(modelURL, metadataURL);
-
-        webcam = new tmImage.Webcam(320, 240, true);
-        await webcam.setup(); // المستخدم يسمح هنا
-        await webcam.play();
-
-        const cam = document.getElementById("webcam");
-        cam.srcObject = webcam.stream;
-        document.getElementById("status").innerText = "✅ الكاميرا تعمل، جارٍ التعرّف...";
-        window.requestAnimationFrame(loop);
-
-      } catch (err) {
-        console.error("Camera error:", err);
-        document.getElementById("status").innerText = "❌ لم يتم السماح بالكاميرا. الرجاء إعادة المحاولة.";
-        document.getElementById("startBtn").style.display = "block";
-      }
+      document.getElementById("webcam").replaceWith(webcam.canvas);
+      labelContainer = document.getElementById("label-container");
     }
 
     async function loop() {
@@ -94,18 +48,26 @@
     }
 
     async function predict() {
-      const predictions = await model.predict(webcam.canvas);
-      predictions.sort((a, b) => b.probability - a.probability);
-      const top = predictions[0];
-      document.getElementById("status").innerText =
-        `📊 الفئة: ${top.className} (ثقة ${(top.probability * 100).toFixed(1)}%)`;
+      const prediction = await model.predict(webcam.canvas);
+      let topClass = "";
+      let topProb = 0;
 
-      if (top.probability > 0.85) {
-        if (top.className.toLowerCase().includes("kid")) {
-          window.location.href = "kids.html";
-        } else if (top.className.toLowerCase().includes("adult")) {
+      for (let i = 0; i < prediction.length; i++) {
+        if (prediction[i].probability > topProb) {
+          topProb = prediction[i].probability;
+          topClass = prediction[i].className;
+        }
+      }
+
+      labelContainer.innerHTML = `الفئة: ${topClass}`;
+
+      // توجيه المستخدم حسب الفئة
+      if (topProb > 0.9) {
+        if (topClass === "Kid") {
+          window.location.href = "kid.html";
+        } else if (topClass === "Adult") {
           window.location.href = "adult.html";
-        } else if (top.className.toLowerCase().includes("senior")) {
+        } else if (topClass === "Senior") {
           window.location.href = "senior.html";
         }
       }
@@ -113,5 +75,3 @@
   </script>
 </body>
 </html>
-
-
