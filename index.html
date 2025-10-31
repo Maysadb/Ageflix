@@ -2,43 +2,45 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>Age Detector</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest/dist/tf.min.js"></script>
+  <title>تحديد الفئة العمرية</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
   <style>
     body { text-align: center; font-family: sans-serif; direction: rtl; }
-    video { width: 300px; border-radius: 10px; margin-top: 15px; }
-    #label-container { margin-top: 10px; font-size: 20px; }
+    video, canvas { width: 300px; border-radius: 10px; margin-top: 15px; }
+    #label-container { margin-top: 10px; font-size: 20px; color: #333; }
+    button { padding: 10px 20px; margin-top: 20px; cursor: pointer; }
   </style>
 </head>
 <body>
   <h2>تحديد الفئة العمرية</h2>
-  <button type="button" onclick="init()">تشغيل الكاميرا</button>
-  <div><video id="webcam" autoplay playsinline></video></div>
+  <button onclick="init()">تشغيل الكاميرا</button>
+  <div id="webcam-container"></div>
   <div id="label-container"></div>
 
-  <script type="text/javascript">
-    const URL = "https://teachablemachine.withgoogle.com/models
-      /UujRQ_OS4/";
-    let model, webcam, labelContainer, maxPredictions;
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+    let model, webcam, labelContainer;
 
     async function init() {
-      const modelURL = URL + "model.json";
-      const metadataURL = URL + "metadata.json";
+      try {
+        const modelURL = URL + "model.json";
+        const metadataURL = URL + "metadata.json";
 
-      // تحميل النموذج
-      model = await tmImage.load(modelURL, metadataURL);
-      maxPredictions = model.getTotalClasses();
+        model = await tmImage.load(modelURL, metadataURL);
 
-      // تفعيل الكاميرا
-      const flip = true;
-      webcam = new tmImage.Webcam(300, 300, flip);
-      await webcam.setup();
-      await webcam.play();
-      window.requestAnimationFrame(loop);
+        webcam = new tmImage.Webcam(300, 300, true); // الكاميرا الأمامية
+        await webcam.setup(); // يطلب الإذن هنا
+        await webcam.play();
 
-      document.getElementById("webcam").replaceWith(webcam.canvas);
-      labelContainer = document.getElementById("label-container");
+        document.getElementById("webcam-container").appendChild(webcam.canvas);
+        labelContainer = document.getElementById("label-container");
+
+        window.requestAnimationFrame(loop);
+      } catch (err) {
+        alert("⚠️ لم يتم تفعيل الكاميرا. تأكد من إعطاء الإذن للكاميرا في المتصفح.");
+        console.error(err);
+      }
     }
 
     async function loop() {
@@ -59,19 +61,16 @@
         }
       }
 
-      labelContainer.innerHTML = `الفئة: ${topClass}`;
+      labelContainer.innerHTML = `الفئة: ${topClass} (${(topProb * 100).toFixed(1)}%)`;
 
-      // توجيه المستخدم حسب الفئة
+      // التوجيه حسب الفئة
       if (topProb > 0.9) {
-        if (topClass === "Kid") {
-          window.location.href = "kid.html";
-        } else if (topClass === "Adult") {
-          window.location.href = "adult.html";
-        } else if (topClass === "Senior") {
-          window.location.href = "senior.html";
-        }
+        if (topClass === "Kid") window.location.href = "kid.html";
+        else if (topClass === "Adult") window.location.href = "adult.html";
+        else if (topClass === "Senior") window.location.href = "senior.html";
       }
     }
   </script>
 </body>
 </html>
+رز
