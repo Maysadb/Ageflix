@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>Ageflix - Kids</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="navbar">
+  <div class="logo">Ageflix</div>
+  <nav>
+    <a href="index.html">Home</a>
+    <div class="dropdown">
+      <button class="dropbtn">Movies</button>
+      <div class="dropdown-content">
+        <a href="movies-kid.html">Kid</a>
+        <a href="movies-adult.html">Adult</a>
+        <a href="movies-senior.html">Senior</a>
+      </div>
+    </div>
+    <a href="about.html">About</a>
+  </nav>
+</header>
+
+<main class="movies-page">
+  <h1>🎈 Kids Movies</h1>
+  <input id="searchInput" type="text" placeholder="Search for a movie...">
+  <div class="movies-grid" id="moviesContainer"></div>
+</main>
+
+<script src="script.js"></script>
+<script>
+getMovies(
+  `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&certification_country=US&certification.lte=G&sort_by=popularity.desc&page=1`,
+  "moviesContainer"
+);
+</script>
+</body>
+</html>
