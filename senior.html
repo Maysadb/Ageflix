@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Senior Movies - Ageflix</title>
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -18,31 +20,32 @@
 
   <section class="movies-section">
     <h1>Senior Movies</h1>
-    <div class="movies-grid" id="movies"></div>
+    <div class="swiper mySwiper">
+      <div class="swiper-wrapper" id="movies"></div>
+      <div class="swiper-button-next"></div>
+      <div class="swiper-button-prev"></div>
+    </div>
   </section>
 
   <script>
     const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
-    const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18,10749,36&certification_country=US&certification.lte=PG-13&sort_by=popularity.desc`;
+    const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=18,10749,36&certification_country=US&certification.lte=PG-13&sort_by=popularity.desc&page=1`;
 
     async function getMovies() {
       const res = await fetch(API_URL);
       const data = await res.json();
       const moviesContainer = document.getElementById("movies");
 
-      data.results.forEach(movie => {
-        if (movie.adult) return;
+      let count = 0;
+      for (let movie of data.results) {
+        if (movie.adult) continue; // Skip adult-labeled movies
+        count++;
+        if (count > 30) break;
+
         const img = movie.poster_path
           ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
           : "https://via.placeholder.com/200x300?text=No+Image";
 
         const div = document.createElement("div");
-        div.classList.add("movie-card");
-        div.innerHTML = `<img src="${img}" alt="${movie.title}"><h3>${movie.title}</h3>`;
-        moviesContainer.appendChild(div);
-      });
-    }
-    getMovies();
-  </script>
-</body>
-</html>
+        div.classList.add("swiper-slide");
+        div.innerHTML = `<img
