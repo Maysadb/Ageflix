@@ -1,74 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Kids Movies - Ageflix</title>
-  <link rel="stylesheet" href="style.css">
-  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kids Movies - Ageflix</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
+<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">Ageflix</div>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+<nav class="navbar">
+  <div class="logo">Ageflix</div>
+  <ul>
+    <li><a href="index.html">Home</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+</nav>
 
-  <section class="movies-section">
-    <h1>Kids Movies</h1>
-    <div class="swiper mySwiper">
-      <div class="swiper-wrapper" id="movies"></div>
-      <div class="swiper-button-next"></div>
-      <div class="swiper-button-prev"></div>
-    </div>
-  </section>
+<section class="movies-section">
+  <h1>Kids Movies</h1>
+  <div class="swiper mySwiper">
+    <div class="swiper-wrapper" id="movies"></div>
+    <div class="swiper-button-next"></div>
+    <div class="swiper-button-prev"></div>
+  </div>
+</section>
 
-  <script>
-    const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
-    const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=16,10751&certification_country=US&certification.lte=PG&sort_by=popularity.desc&page=1`;
+<script>
+const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
+const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=16,10751&certification_country=US&certification.lte=PG&sort_by=popularity.desc&page=1`;
 
-    async function getMovies() {
-      const res = await fetch(API_URL);
-      const data = await res.json();
-      const moviesContainer = document.getElementById("movies");
+async function getMovies() {
+  const res = await fetch(API_URL);
+  const data = await res.json();
+  const moviesContainer = document.getElementById("movies");
 
-      let count = 0;
-      for (let movie of data.results) {
-        if (movie.adult) continue;
-        count++;
-        if (count > 30) break;
+  let count = 0;
+  for (let movie of data.results) {
+    if (movie.adult) continue; // تجاهل المحتوى الغير لائق
+    count++;
+    if (count > 30) break;
 
-        const img = movie.poster_path
-          ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-          : "https://via.placeholder.com/200x300?text=No+Image";
+    const img = movie.poster_path
+      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
+      : "https://via.placeholder.com/200x300?text=No+Image";
 
-        const div = document.createElement("div");
-        div.classList.add("swiper-slide");
-        div.innerHTML = `<img src="${img}" alt="${movie.title}"><h3>${movie.title}</h3>`;
-        moviesContainer.appendChild(div);
-      }
+    const div = document.createElement("div");
+    div.classList.add("swiper-slide");
+    div.innerHTML = `<img src="${img}" alt="${movie.title}"><h3>${movie.title}</h3>`;
+    moviesContainer.appendChild(div);
+  }
 
-      new Swiper(".mySwiper", {
-        slidesPerView: 5,
-        spaceBetween: 20,
-        navigation: {
-          nextEl: ".swiper-button-next",
-          prevEl: ".swiper-button-prev",
-        },
-        breakpoints: {
-          320: { slidesPerView: 1 },
-          480: { slidesPerView: 2 },
-          768: { slidesPerView: 3 },
-          1024: { slidesPerView: 5 },
-        },
-      });
-    }
-
-    getMovies();
-  </script>
+  new Swiper(".mySwiper", {
+    slidesPerView: 5,
+    spaceBetween: 20,
+    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
+    breakpoints: {
+      320: { slidesPerView: 1 },
+      480: { slidesPerView: 2 },
+      768: { slidesPerView: 3 },
+      1024: { slidesPerView: 5 },
+    },
+  });
+}
+getMovies();
+</script>
 </body>
 </html>
