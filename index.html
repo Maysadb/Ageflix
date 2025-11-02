@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ageflix</title>
   <link rel="stylesheet" href="style.css">
+  <!-- مكتبات ضرورية -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 </head>
 <body>
   <nav class="navbar">
@@ -23,8 +25,9 @@
     <p>Detect your age group and get personalized movie recommendations!</p>
 
     <div class="camera">
+      <canvas id="canvas" width="300" height="225" style="display:none"></canvas>
       <video id="webcam" autoplay playsinline width="300" height="225"></video>
-      <p id="label">Detecting...</p>
+      <p id="label">Loading model...</p>
     </div>
   </section>
 
