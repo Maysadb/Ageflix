@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ageflix</title>
   <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0"></script>
 </head>
 <body>
-  <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">Ageflix</div>
     <ul>
@@ -18,16 +18,13 @@
     </ul>
   </nav>
 
-  <!-- Main Section -->
   <section class="main">
     <h1>Welcome to Ageflix</h1>
     <p>Detect your age group and get personalized movie recommendations!</p>
-    
-    <!-- Teachable Machine Embed -->
-    <div class="tm-container">
-      <iframe src="https://teachablemachine.withgoogle.com/models/UujRQ_OS4/"
-              width="100%" height="500" frameborder="0" allowfullscreen>
-      </iframe>
+
+    <div class="camera">
+      <video id="webcam" autoplay playsinline width="300" height="225"></video>
+      <p id="label">Detecting...</p>
     </div>
   </section>
 
