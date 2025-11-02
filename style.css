@@ -67,48 +67,40 @@ body {
   overflow: hidden;
 }
 
-/* Movies */
-.movies-section {
-  text-align: center;
-  padding: 60px 20px;
+/* Swiper Slider */
+.swiper {
+  width: 90%;
+  padding: 40px 0;
+  margin: auto;
 }
 
-.movies-section h1 {
-  font-size: 2em;
-  color: #e50914;
-  margin-bottom: 40px;
-}
-
-.movies-grid {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-.movie-card {
+.swiper-slide {
   background-color: #141414;
   border-radius: 10px;
   overflow: hidden;
-  width: 200px;
+  text-align: center;
   transition: transform 0.3s ease, box-shadow 0.3s;
 }
 
-.movie-card:hover {
-  transform: scale(1.08);
-  box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
-}
-
-.movie-card img {
+.swiper-slide img {
   width: 100%;
   height: 300px;
   object-fit: cover;
 }
 
-.movie-card h3 {
-  font-size: 1em;
-  margin: 10px;
+.swiper-slide h3 {
   color: #fff;
+  margin: 10px 0;
+}
+
+.swiper-slide:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(229, 9, 20, 0.5);
+}
+
+.swiper-button-next,
+.swiper-button-prev {
+  color: #e50914;
 }
 
 /* About & Contact */
@@ -122,11 +114,6 @@ body {
   margin: 0 auto 30px;
   line-height: 1.6;
   color: #ccc;
-}
-
-.video-container video {
-  border: 2px solid #e50914;
-  border-radius: 10px;
 }
 
 /* Team */
