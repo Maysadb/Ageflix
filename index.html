@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Ageflix</title>
   <link rel="stylesheet" href="style.css">
-  <!-- مكتبات ضرورية -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.0.0"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 </head>
@@ -13,19 +12,17 @@
   <nav class="navbar">
     <div class="logo">Ageflix</div>
     <ul>
-      <li><a href="index.html">Home</a></li>
+      <li><a href="index.html" class="active">Home</a></li>
       <li><a href="about.html">About</a></li>
-      <li><a href="#movies">Movies</a></li>
       <li><a href="contact.html">Contact</a></li>
     </ul>
   </nav>
 
   <section class="main">
     <h1>Welcome to Ageflix</h1>
-    <p>Detect your age group and get personalized movie recommendations!</p>
+    <p>AI-powered movie recommendations based on your age group!</p>
 
     <div class="camera">
-      <canvas id="canvas" width="300" height="225" style="display:none"></canvas>
       <video id="webcam" autoplay playsinline width="300" height="225"></video>
       <p id="label">Loading model...</p>
     </div>
