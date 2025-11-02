@@ -2,60 +2,45 @@
 <html lang="ar">
 <head>
   <meta charset="UTF-8">
-  <title>تحديد الفئة العمرية</title>
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@latest"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@latest"></script>
-  <style>
-    body { text-align: center; font-family: sans-serif; direction: rtl; background: #f4f4f4; }
-    video, canvas { width: 320px; border-radius: 10px; margin-top: 15px; border: 2px solid #444; }
-    #label-container { margin-top: 10px; font-size: 20px; color: #333; font-weight: bold; }
-    button { padding: 10px 20px; margin-top: 25px; cursor: pointer; font-size: 16px; border-radius: 8px; }
-  </style>
+  <title>Age Detector</title>
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@2.8.5"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
 </head>
-<body>
-  <h2>تحديد الفئة العمرية</h2>
-  <p>اضغطي الزر أدناه لتفعيل الكاميرا 👇</p>
-  <button onclick="init()">تشغيل الكاميرا</button>
+<body style="text-align:center; font-family: sans-serif;">
+
+  <h1>👶🧑‍🦳 تحديد الفئة العمرية</h1>
+  <button type="button" onclick="init()">تشغيل الكاميرا</button>
   <div id="webcam-container"></div>
   <div id="label-container"></div>
 
-  <script>
+  <script type="text/javascript">
     const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
-    let model, webcam, labelContainer, isPredicting = false;
+
+    let model, webcam, labelContainer, maxPredictions;
 
     async function init() {
-      try {
-        document.getElementById("label-container").innerHTML = "⏳ جاري تشغيل الكاميرا...";
-        const modelURL = URL + "model.json";
-        const metadataURL = URL + "metadata.json";
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
 
-        model = await tmImage.load(modelURL, metadataURL);
-        webcam = new tmImage.Webcam(320, 320, true);
+      // تحميل النموذج
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
 
-        // إعداد الكاميرا وطلب الإذن
-        await webcam.setup({ facingMode: "user" });
-        await webcam.play();
+      // إعداد الكاميرا
+      const flip = true;
+      webcam = new tmImage.Webcam(200, 200, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
 
-        document.getElementById("webcam-container").innerHTML = "";
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        labelContainer = document.getElementById("label-container");
-
-        isPredicting = true;
-        document.getElementById("label-container").innerHTML = "✅ الكاميرا تعمل الآن!";
-        window.requestAnimationFrame(loop);
-      } catch (err) {
-        console.error(err);
-        let msg = "⚠️ لم يتم الوصول إلى الكاميرا. ";
-        if (err.name === "NotAllowedError") msg += "يبدو أنك رفضت الإذن، فعّليه من إعدادات المتصفح.";
-        else if (err.name === "NotFoundError") msg += "لم يتم العثور على كاميرا في الجهاز.";
-        else msg += "تأكدي من السماح للموقع باستخدام الكاميرا.";
-        alert(msg);
-        document.getElementById("label-container").innerHTML = msg;
+      document.getElementById("webcam-container").appendChild(webcam.canvas);
+      labelContainer = document.getElementById("label-container");
+      for (let i = 0; i < maxPredictions; i++) {
+        labelContainer.appendChild(document.createElement("div"));
       }
     }
 
     async function loop() {
-      if (!isPredicting) return;
       webcam.update();
       await predict();
       window.requestAnimationFrame(loop);
@@ -63,27 +48,30 @@
 
     async function predict() {
       const prediction = await model.predict(webcam.canvas);
-      let topClass = "";
-      let topProb = 0;
+      let highestClass = "";
+      let highestProb = 0;
 
       for (let i = 0; i < prediction.length; i++) {
-        if (prediction[i].probability > topProb) {
-          topProb = prediction[i].probability;
-          topClass = prediction[i].className;
+        if (prediction[i].probability > highestProb) {
+          highestProb = prediction[i].probability;
+          highestClass = prediction[i].className;
         }
       }
 
-      labelContainer.innerHTML = `الفئة: ${topClass} (${(topProb * 100).toFixed(1)}%)`;
+      labelContainer.innerHTML = "تم التعرّف: " + highestClass;
 
-      if (topProb > 0.9) {
-        isPredicting = false;
-        setTimeout(() => {
-          if (topClass === "Kid") window.location.href = "kid.html";
-          else if (topClass === "Adult") window.location.href = "adult.html";
-          else if (topClass === "Senior") window.location.href = "senior.html";
-        }, 1000);
+      // الانتقال حسب الفئة
+      if (highestProb > 0.9) { // ثقة عالية
+        if (highestClass === "kid") {
+          window.location.href = "movies_kid.html";
+        } else if (highestClass === "adult") {
+          window.location.href = "movies_adult.html";
+        } else if (highestClass === "senior") {
+          window.location.href = "movies_senior.html";
+        }
       }
     }
   </script>
+
 </body>
 </html>
