@@ -1,18 +1,30 @@
-let model, webcam, labelContainer;
+const URL = "model/"; // تأكد أن هذا المجلد موجود فعلاً في root أو داخل public في Vercel
+let model, webcam, labelContainer, maxPredictions;
 
 async function init() {
-  const modelURL = "model/model.json"; // ضع المسار الصحيح للموديل
-  const metadataURL = "model/metadata.json";
+  try {
+    console.log("🔹 Initializing model...");
+    const modelURL = URL + "model.json";
+    const metadataURL = URL + "metadata.json";
 
-  model = await tmImage.load(modelURL, metadataURL);
-  const flip = true;
-  webcam = new tmImage.Webcam(300, 225, flip);
-  await webcam.setup(); // طلب الوصول للكاميرا
-  await webcam.play();
-  window.requestAnimationFrame(loop);
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
 
-  document.getElementById("webcam").srcObject = webcam.webcam.stream;
-  labelContainer = document.getElementById("label");
+    console.log("✅ Model loaded, setting up webcam...");
+    const flip = true;
+    webcam = new tmImage.Webcam(300, 225, flip);
+
+    await webcam.setup(); // هنا بيطلب إذن الكاميرا
+    await webcam.play();
+    window.requestAnimationFrame(loop);
+
+    document.getElementById("webcam").srcObject = webcam.webcam.stream;
+    labelContainer = document.getElementById("label");
+    labelContainer.innerText = "Model loaded! Detecting...";
+  } catch (err) {
+    console.error("❌ Error initializing:", err);
+    document.getElementById("label").innerText = "Error: " + err.message;
+  }
 }
 
 async function loop() {
@@ -23,9 +35,8 @@ async function loop() {
 
 async function predict() {
   const prediction = await model.predict(webcam.canvas);
-  let highest = prediction.reduce((prev, current) => (prev.probability > current.probability) ? prev : current);
-
-  labelContainer.innerText = `Detected: ${highest.className} (${(highest.probability * 100).toFixed(1)}%)`;
+  let highest = prediction.reduce((a, b) => a.probability > b.probability ? a : b);
+  document.getElementById("label").innerText = `Detected: ${highest.className} (${(highest.probability * 100).toFixed(1)}%)`;
 
   if (highest.probability > 0.9) {
     if (highest.className === "Kid") window.location.href = "kids.html";
