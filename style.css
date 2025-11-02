@@ -1,44 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap');
+
 body {
   margin: 0;
   background-color: #000;
   color: #fff;
-  font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-family: 'Poppins', sans-serif;
 }
 
+/* Navbar */
 .navbar {
   display: flex;
   justify-content: space-between;
   align-items: center;
   background-color: #141414;
-  padding: 10px 50px;
+  padding: 15px 50px;
 }
 
 .logo {
   color: #e50914;
   font-size: 2em;
-  font-weight: bold;
-  letter-spacing: 2px;
+  font-weight: 700;
+  letter-spacing: 1px;
 }
 
 .navbar ul {
   list-style: none;
   display: flex;
   gap: 30px;
+  margin: 0;
 }
 
 .navbar a {
   color: #fff;
   text-decoration: none;
   font-weight: 500;
+  transition: color 0.3s;
 }
 
-.navbar a:hover {
+.navbar a:hover,
+.navbar a.active {
   color: #e50914;
 }
 
+/* Main Section */
 .main {
   text-align: center;
   padding: 80px 20px;
+}
+
+.main h1 {
+  font-size: 2.5em;
+  color: #fff;
+  margin-bottom: 10px;
+}
+
+.main p {
+  color: #bbb;
+  font-size: 1.2em;
 }
 
 .tm-container {
@@ -47,4 +65,99 @@ body {
   border: 2px solid #e50914;
   border-radius: 10px;
   overflow: hidden;
+}
+
+/* Movies */
+.movies-section {
+  text-align: center;
+  padding: 60px 20px;
+}
+
+.movies-section h1 {
+  font-size: 2em;
+  color: #e50914;
+  margin-bottom: 40px;
+}
+
+.movies-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.movie-card {
+  background-color: #141414;
+  border-radius: 10px;
+  overflow: hidden;
+  width: 200px;
+  transition: transform 0.3s ease, box-shadow 0.3s;
+}
+
+.movie-card:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(229, 9, 20, 0.4);
+}
+
+.movie-card img {
+  width: 100%;
+  height: 300px;
+  object-fit: cover;
+}
+
+.movie-card h3 {
+  font-size: 1em;
+  margin: 10px;
+  color: #fff;
+}
+
+/* About & Contact */
+.about-section, .contact-section {
+  text-align: center;
+  padding: 80px 20px;
+}
+
+.about-section p, .contact-section p {
+  max-width: 600px;
+  margin: 0 auto 30px;
+  line-height: 1.6;
+  color: #ccc;
+}
+
+.video-container video {
+  border: 2px solid #e50914;
+  border-radius: 10px;
+}
+
+/* Team */
+.team {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.member {
+  width: 200px;
+  text-align: center;
+}
+
+.member img {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  object-fit: cover;
+  border: 2px solid #e50914;
+}
+
+.member h3 {
+  margin: 10px 0 5px;
+  font-size: 1.1em;
+  color: #fff;
+}
+
+.member p {
+  color: #bbb;
+  font-size: 0.9em;
 }
