@@ -3,68 +3,124 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Adult Movies - Ageflix</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css"/>
-<script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+<title>Ageflix - Adult Movies</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+  body { background: #111; color: #fff; }
+  nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
+  .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: red; }
+  .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
+  .navbar ul li { margin: 0 15px; }
+  .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
+  .navbar .icon { flex: 1; text-align: right; }
+
+  .movies-container { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 15px; padding: 20px; }
+  .movie-card { position: relative; cursor: pointer; border-radius: 10px; overflow: hidden; transition: transform 0.3s; }
+  .movie-card img { width: 100%; height: 300px; object-fit: cover; border-radius: 10px; }
+  .movie-card:hover { transform: scale(1.05); }
+
+  #movie-popup { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index: 9999; display:none; }
+  .popup-content { background: #111; border: 2px solid #e50914; border-radius:10px; padding: 30px; max-width: 500px; text-align:center; position: relative; }
+  .popup-content img { width: 100%; height: auto; border-radius:10px; margin-bottom:15px; }
+  .popup-content h2 { font-size: 24px; color: #e50914; margin-bottom:10px; }
+  .popup-content p { font-size:16px; margin-bottom:5px; }
+  #popup-trailer { width:100%; height:250px; border:none; margin-top:10px; border-radius:10px; }
+  .close-btn { position: absolute; top:10px; right:10px; background:#e50914; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; }
+
+  @media(max-width:768px){
+    .movie-card img{height:200px;}
+    .popup-content { width: 90%; }
+    #popup-trailer { height:180px; }
+  }
+</style>
 </head>
 <body>
+
 <nav class="navbar">
   <div class="logo">Ageflix</div>
   <ul>
     <li><a href="index.html">Home</a></li>
-    <li><a href="about.html">About</a></li>
+    <li><a href="movies.html">Movies</a></li>
     <li><a href="contact.html">Contact</a></li>
   </ul>
+  <div class="icon">🎬</div>
 </nav>
 
-<section class="movies-section">
-  <h1>Adult Movies</h1>
-  <div class="swiper mySwiper">
-    <div class="swiper-wrapper" id="movies"></div>
-    <div class="swiper-button-next"></div>
-    <div class="swiper-button-prev"></div>
+<section class="movies-container">
+  <div class="movie-card"
+       data-title="Action Hero"
+       data-summary="An intense action-packed movie for adults."
+       data-actors="Tom Cruise, Emily Blunt"
+       data-img="https://picsum.photos/400/300?random=5"
+       data-trailer="https://www.youtube.com/embed/5PSNL1qE6VY">
+    <img src="https://picsum.photos/400/300?random=5" alt="Action Hero">
+  </div>
+
+  <div class="movie-card"
+       data-title="Romantic Escape"
+       data-summary="A romantic story with thrilling adventures."
+       data-actors="Ryan Gosling, Emma Stone"
+       data-img="https://picsum.photos/400/300?random=6"
+       data-trailer="https://www.youtube.com/embed/3mE2KnZlFvk">
+    <img src="https://picsum.photos/400/300?random=6" alt="Romantic Escape">
+  </div>
+
+  <div class="movie-card"
+       data-title="Mystery Island"
+       data-summary="A group of friends explore a mysterious island."
+       data-actors="Chris Hemsworth, Natalie Portman"
+       data-img="https://picsum.photos/400/300?random=7"
+       data-trailer="https://www.youtube.com/embed/0U5v2nqj_EE">
+    <img src="https://picsum.photos/400/300?random=7" alt="Mystery Island">
+  </div>
+
+  <div class="movie-card"
+       data-title="Thrill Night"
+       data-summary="A suspense thriller full of twists and surprises."
+       data-actors="Scarlett Johansson, Robert Downey Jr."
+       data-img="https://picsum.photos/400/300?random=8"
+       data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ">
+    <img src="https://picsum.photos/400/300?random=8" alt="Thrill Night">
   </div>
 </section>
 
+<div id="movie-popup">
+  <div class="popup-content">
+    <button class="close-btn">X</button>
+    <img src="" id="popup-img" alt="">
+    <h2 id="popup-title"></h2>
+    <p id="popup-summary"></p>
+    <p id="popup-actors"></p>
+    <iframe id="popup-trailer" src="" allowfullscreen></iframe>
+  </div>
+</div>
+
 <script>
-const API_KEY = "22cb4298f71c93d5eb897e96b361b632";
-const API_URL = `https://api.themoviedb.org/3/discover/movie?api_key=${API_KEY}&with_genres=28,53&certification_country=US&certification.lte=PG-13&sort_by=popularity.desc&page=1`;
+  const movieCards = document.querySelectorAll('.movie-card');
+  const popup = document.getElementById('movie-popup');
+  const popupImg = document.getElementById('popup-img');
+  const popupTitle = document.getElementById('popup-title');
+  const popupSummary = document.getElementById('popup-summary');
+  const popupActors = document.getElementById('popup-actors');
+  const popupTrailer = document.getElementById('popup-trailer');
+  const closeBtn = document.querySelector('.close-btn');
 
-async function getMovies() {
-  const res = await fetch(API_URL);
-  const data = await res.json();
-  const moviesContainer = document.getElementById("movies");
-
-  let count = 0;
-  for (let movie of data.results) {
-    if (movie.adult) continue; // تجاهل المحتوى الغير لائق
-    count++;
-    if (count > 30) break;
-
-    const img = movie.poster_path
-      ? `https://image.tmdb.org/t/p/w500${movie.poster_path}`
-      : "https://via.placeholder.com/200x300?text=No+Image";
-
-    const div = document.createElement("div");
-    div.classList.add("swiper-slide");
-    div.innerHTML = `<img src="${img}" alt="${movie.title}"><h3>${movie.title}</h3>`;
-    moviesContainer.appendChild(div);
-  }
-
-  new Swiper(".mySwiper", {
-    slidesPerView: 5,
-    spaceBetween: 20,
-    navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" },
-    breakpoints: {
-      320: { slidesPerView: 1 },
-      480: { slidesPerView: 2 },
-      768: { slidesPerView: 3 },
-      1024: { slidesPerView: 5 },
-    },
+  movieCards.forEach(card => {
+    card.addEventListener('click', () => {
+      popupImg.src = card.dataset.img;
+      popupTitle.textContent = card.dataset.title;
+      popupSummary.textContent = card.dataset.summary;
+      popupActors.textContent = "Actors: " + card.dataset.actors;
+      popupTrailer.src = card.dataset.trailer;
+      popup.style.display = "flex";
+    });
   });
-}
-getMovies();
+
+  closeBtn.addEventListener('click', () => {
+    popup.style.display = "none";
+    popupTrailer.src = "";
+  });
 </script>
+
 </body>
 </html>
