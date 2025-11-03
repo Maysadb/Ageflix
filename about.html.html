@@ -1,34 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>About - Ageflix</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Age Detection | AgeFlix</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image"></script>
+
+  <style>
+    body {
+      background-color: #000;
+      color: white;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+
+    video {
+      border: 3px solid #e50914;
+      border-radius: 10px;
+      width: 320px;
+      height: 240px;
+      margin-bottom: 20px;
+    }
+
+    #label-container {
+      margin-top: 15px;
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    #loading {
+      display: none;
+      font-size: 20px;
+      color: #e50914;
+      margin-top: 15px;
+      animation: blink 1s infinite;
+    }
+
+    @keyframes blink {
+      50% { opacity: 0.5; }
+    }
+  </style>
 </head>
 <body>
-  <nav class="navbar">
-    <div class="logo">Ageflix</div>
-    <ul>
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html" class="active">About</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-  </nav>
+  <h1>Detecting your age group...</h1>
+  <video id="webcam" autoplay playsinline></video>
+  <div id="label-container"></div>
+  <div id="loading">Loading your movies...</div>
 
-  <section class="about-section">
-    <h1>About Ageflix</h1>
-    <p>
-      Ageflix is an AI-powered movie platform that uses Teachable Machine technology to
-      detect your age group and recommend movies tailored to you.
-    </p>
+  <script type="text/javascript">
+    const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
 
-    <div class="video-container">
-      <video controls width="600" poster="https://i.imgur.com/mN5OiyV.jpeg">
-        <source src="https://samplelib.com/lib/preview/mp4/sample-5s.mp4" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-    </div>
-  </section>
+    let model, webcam, labelContainer, maxPredictions;
+    let detected = false;
+
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
+
+      const flip = true;
+      webcam = new tmImage.Webcam(320, 240, flip);
+      await webcam.setup();
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      document.getElementById("webcam").replaceWith(webcam.canvas);
+      labelContainer = document.getElementById("label-container");
+    }
+
+    async function loop() {
+      webcam.update();
+      await predict();
+      if (!detected) window.requestAnimationFrame(loop);
+    }
+
+    async function predict() {
+      const prediction = await model.predict(webcam.canvas);
+      let highest = prediction[0];
+
+      for (let i = 1; i < prediction.length; i++) {
+        if (prediction[i].probability > highest.probability) {
+          highest = prediction[i];
+        }
+      }
+
+      const label = highest.className;
+      labelContainer.innerHTML = `You are: <span style="color:#e50914">${label}</span>`;
+
+      // لما تكون الثقة عالية، نعرض تحميل ثم نحول
+      if (highest.probability > 0.90 && !detected) {
+        detected = true;
+        showLoading(label);
+      }
+    }
+
+    function showLoading(label) {
+      document.getElementById("loading").style.display = "block";
+
+      setTimeout(() => {
+        if (label === "Kid") {
+          window.location.href = "kids.html";
+        } else if (label === "Adult") {
+          window.location.href = "adults.html";
+        } else if (label === "Senior") {
+          window.location.href = "seniors.html";
+        } else {
+          alert("Could not detect age group, please try again.");
+          location.reload();
+        }
+      }, 2500);
+    }
+
+    init();
+  </script>
 </body>
 </html>
