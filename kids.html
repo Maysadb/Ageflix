@@ -43,6 +43,7 @@
   .popup-content img { width: 100%; height: auto; border-radius:10px; margin-bottom:15px; }
   .popup-content h2 { font-size: 24px; color: #e50914; margin-bottom:10px; }
   .popup-content p { font-size:16px; margin-bottom:5px; }
+  #popup-trailer { width:100%; height:250px; border:none; margin-top:10px; border-radius:10px; }
   .close-btn {
     position: absolute; top:10px; right:10px; background:#e50914; color:white;
     border:none; border-radius:5px; padding:5px 10px; cursor:pointer;
@@ -52,12 +53,13 @@
   @media(max-width:768px){
     .movie-card img{height:200px;}
     .popup-content { width: 90%; }
+    #popup-trailer { height:180px; }
   }
 </style>
 </head>
 <body>
 
-<!-- Navbar نفس الهوم -->
+<!-- Navbar -->
 <nav class="navbar">
   <div class="logo">Ageflix</div>
   <ul>
@@ -70,16 +72,39 @@
 
 <!-- Movies Grid -->
 <section class="movies-container">
-  <div class="movie-card" data-title="Toy Adventure" data-summary="A fun adventure with toys." data-actors="Tom Hanks, Tim Allen" data-img="toy.jpeg">
+  <div class="movie-card"
+       data-title="Toy Adventure"
+       data-summary="A fun adventure with toys that come to life."
+       data-actors="Tom Hanks, Tim Allen"
+       data-img="toy.jpeg"
+       data-trailer="https://www.youtube.com/embed/KYz2wyBy3kc">
     <img src="toy.jpeg" alt="Toy Adventure">
   </div>
-  <div class="movie-card" data-title="Magic School" data-summary="Kids learn magic at school." data-actors="Emma Watson, Daniel Radcliffe" data-img="magic.jpeg">
+
+  <div class="movie-card"
+       data-title="Magic School"
+       data-summary="Kids discover magical powers in a secret school."
+       data-actors="Emma Watson, Daniel Radcliffe"
+       data-img="magic.jpeg"
+       data-trailer="https://www.youtube.com/embed/VQWqkZyCEOs">
     <img src="magic.jpeg" alt="Magic School">
   </div>
-  <div class="movie-card" data-title="Jungle Fun" data-summary="Animals and kids explore the jungle." data-actors="Chris Pratt, Zoe Saldana" data-img="jungle.jpeg">
+
+  <div class="movie-card"
+       data-title="Jungle Fun"
+       data-summary="Kids and animals explore a magical jungle together."
+       data-actors="Chris Pratt, Zoe Saldana"
+       data-img="jungle.jpeg"
+       data-trailer="https://www.youtube.com/embed/fKXiFRU7zzc">
     <img src="jungle.jpeg" alt="Jungle Fun">
   </div>
-  <div class="movie-card" data-title="Space Kids" data-summary="Kids travel to space." data-actors="Millie Bobby Brown, Finn Wolfhard" data-img="space.jpeg">
+
+  <div class="movie-card"
+       data-title="Space Kids"
+       data-summary="A group of kids travel across the galaxy on an adventure."
+       data-actors="Millie Bobby Brown, Finn Wolfhard"
+       data-img="space.jpeg"
+       data-trailer="https://www.youtube.com/embed/8X4FPi3FIMQ">
     <img src="space.jpeg" alt="Space Kids">
   </div>
 </section>
@@ -92,6 +117,7 @@
     <h2 id="popup-title"></h2>
     <p id="popup-summary"></p>
     <p id="popup-actors"></p>
+    <iframe id="popup-trailer" src="" allowfullscreen></iframe>
   </div>
 </div>
 
@@ -102,6 +128,7 @@
   const popupTitle = document.getElementById('popup-title');
   const popupSummary = document.getElementById('popup-summary');
   const popupActors = document.getElementById('popup-actors');
+  const popupTrailer = document.getElementById('popup-trailer');
   const closeBtn = document.querySelector('.close-btn');
 
   movieCards.forEach(card => {
@@ -110,12 +137,14 @@
       popupTitle.textContent = card.dataset.title;
       popupSummary.textContent = card.dataset.summary;
       popupActors.textContent = "Actors: " + card.dataset.actors;
+      popupTrailer.src = card.dataset.trailer;
       popup.style.display = "flex";
     });
   });
 
   closeBtn.addEventListener('click', () => {
     popup.style.display = "none";
+    popupTrailer.src = ""; // إيقاف الفيديو عند الإغلاق
   });
 </script>
 
