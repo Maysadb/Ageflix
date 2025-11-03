@@ -1,149 +1,186 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ageflix - Home</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AgeFlix</title>
+
+  <!-- مكتبة Teachable Machine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
   <style>
-    * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
-    body { background: #000; color:#fff; }
-
-    /* Navbar */
-    nav.navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #111;
-      color: #fff;
-      padding: 10px 20px;
-      flex-wrap: wrap;
+    body {
+      margin: 0;
+      background-color: #000;
+      color: white;
+      font-family: "Netflix Sans", Arial, sans-serif;
+      overflow-x: hidden;
+      text-align: center;
     }
-    .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: #e50914; }
-    .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
-    .navbar ul li { margin: 0 15px; }
-    .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
-    .navbar .icon { flex: 1; text-align: right; }
 
-    /* Marquee */
-    .marquee-container {
-      width: 100%;
+    header {
+      background-color: #111;
+      padding: 20px;
+      font-size: 32px;
+      font-weight: bold;
+      color: #e50914;
+      letter-spacing: 2px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    }
+
+    #webcam-container {
+      margin-top: 40px;
+    }
+
+    #startBtn {
+      background-color: #e50914;
+      color: white;
+      border: none;
+      padding: 15px 40px;
+      border-radius: 5px;
+      font-size: 18px;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    #startBtn:hover {
+      background-color: #b00610;
+    }
+
+    #label-container {
+      margin-top: 20px;
+      color: #ccc;
+    }
+
+    footer {
+      margin-top: 80px;
+      padding: 20px;
+      color: #666;
+      font-size: 14px;
+    }
+
+    /* 🎞️ سلايدر */
+    .slider {
+      position: relative;
+      max-width: 800px;
+      margin: 60px auto;
       overflow: hidden;
-      background: #222;
+      border-radius: 10px;
+      box-shadow: 0 0 20px rgba(255,255,255,0.1);
+    }
+
+    .slide {
+      display: none;
+      width: 100%;
+    }
+
+    .slide.active {
+      display: block;
+      animation: fade 1s ease;
+    }
+
+    @keyframes fade {
+      from {opacity: 0.5;}
+      to {opacity: 1;}
+    }
+
+    .slide img {
+      width: 100%;
+      border-radius: 10px;
+    }
+
+    .prev, .next {
+      cursor: pointer;
+      position: absolute;
+      top: 50%;
+      width: auto;
+      padding: 10px;
+      margin-top: -22px;
+      color: white;
+      font-weight: bold;
+      font-size: 24px;
+      border-radius: 0 3px 3px 0;
+      user-select: none;
+      background: rgba(0,0,0,0.4);
+    }
+
+    .next { right: 0; }
+
+    .prev:hover, .next:hover {
+      background: rgba(0,0,0,0.8);
+    }
+
+    .dots {
+      text-align: center;
+      margin-top: 10px;
+    }
+
+    .dot {
+      height: 10px;
+      width: 10px;
+      margin: 0 3px;
+      background-color: #bbb;
+      border-radius: 50%;
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .dot.active {
+      background-color: #e50914;
+    }
+
+    /* النص المتحرك */
+    .marquee {
+      margin-top: 30px;
       color: #fff;
       font-size: 20px;
-      padding: 10px 0;
-    }
-    .marquee {
-      display: inline-block;
+      overflow: hidden;
       white-space: nowrap;
-      animation: marquee 15s linear infinite;
-    }
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
-
-    /* Banner */
-    .banner-slider { position: relative; overflow: hidden; max-width: 100%; height: 400px; margin-bottom:20px; background:#000; }
-    .slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
-    .slide.active { opacity: 1; z-index: 2; }
-    .slide img { width: 100%; height: 100%; object-fit: cover; }
-    .prev, .next { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: #fff; border: none; padding: 10px; cursor: pointer; font-size: 24px; z-index: 3; }
-    .prev { left: 10px; }
-    .next { right: 10px; }
-    .dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3; }
-    .dot { width: 12px; height: 12px; border-radius: 50%; background-color: rgba(255,255,255,0.5); cursor: pointer; }
-    .dot.active { background-color: #fff; }
-
-    /* Hero */
-    section.hero { text-align: center; padding: 40px 20px; }
-    section.hero h1 { font-size: 32px; margin-bottom: 10px; color:#fff; }
-    section.hero p { font-size: 18px; margin-bottom: 20px; color:#ccc; }
-    button#startBtn { padding: 12px 25px; font-size: 18px; cursor: pointer; background:#e50914; color:#fff; border:none; border-radius:4px; transition:0.3s; }
-    button#startBtn:hover { background:#b00610; }
-
-    #webcam-container, #label-container { margin: 15px auto; }
-    #loading {
-      display:none;
-      margin-top:20px;
-      font-size:20px;
-      color:#e50914;
-      animation: blink 1s infinite;
-    }
-    @keyframes blink { 50%{opacity:0.5;} }
-
-    @media(max-width:768px){
-      section.hero h1 { font-size: 24px; }
-      button#startBtn { font-size: 16px; }
-      .marquee-container { font-size: 16px; }
+      text-align: center;
+      text-shadow: 0 0 10px rgba(255,255,255,0.2);
     }
   </style>
 </head>
+
 <body>
+  <header>AGEFLIX</header>
 
-  <nav class="navbar">
-    <div class="logo">Ageflix</div>
-    <ul>
-      <li><a href="about.html">About</a></li>
-      <li><a href="movies.html">Movies</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="icon">🎬</div>
-  </nav>
+  <div id="webcam-container"></div>
+  <div id="label-container"></div>
+  <button id="startBtn">🎥 Start Camera & Detect Age</button>
 
-  <div class="marquee-container">
-    <div class="marquee" id="marqueeText"></div>
+  <div class="slider">
+    <div class="slide active"><img src="https://i.ibb.co/nj2Tt4v/movie1.jpg" alt="Slide 1"></div>
+    <div class="slide"><img src="https://i.ibb.co/F0c2tYV/movie2.jpg" alt="Slide 2"></div>
+    <div class="slide"><img src="https://i.ibb.co/X7jJvZs/movie3.jpg" alt="Slide 3"></div>
+    <a class="prev">&#10094;</a>
+    <a class="next">&#10095;</a>
   </div>
 
-  <section class="banner-slider" id="bannerSlider">
-    <div class="slide active"><img src="1.jpeg" alt="Banner 1"></div>
-    <div class="slide"><img src="2.jpeg" alt="Banner 2"></div>
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
-    <div class="dots"></div>
-  </section>
+  <div class="dots"></div>
+  <div class="marquee"><span id="marqueeText"></span></div>
 
-  <section class="hero">
-    <h1>Welcome to Ageflix</h1>
-    <p>Discover movies according to your age group!</p>
+  <footer>© 2025 AgeFlix. All Rights Reserved.</footer>
 
-    <div id="webcam-container"></div>
-    <div id="label-container"></div>
-    <div id="loading">Loading your movies...</div>
-
-    <button id="startBtn">Start Camera & Detect Age</button>
-  </section>
-
-  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
-
+  <!-- 🎬 سكربت الموقع -->
   <script>
     const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
-    let model, webcam, maxPredictions, detected = false;
+    let model, webcam, maxPredictions;
+    let detected = false;
 
     async function init() {
-      document.getElementById("startBtn").style.display = "none";
-      document.getElementById("label-container").innerText = "Initializing camera...";
-
       const modelURL = URL + "model.json";
       const metadataURL = URL + "metadata.json";
-
       model = await tmImage.load(modelURL, metadataURL);
       maxPredictions = model.getTotalClasses();
 
       const flip = true;
       webcam = new tmImage.Webcam(400, 300, flip);
-
-      try {
-        await webcam.setup(); // يطلب الإذن من المستخدم
-        await webcam.play();
-        document.getElementById("webcam-container").appendChild(webcam.canvas);
-        document.getElementById("label-container").innerText = "Detecting...";
-        window.requestAnimationFrame(loop);
-      } catch (err) {
-        alert("Please allow camera access to continue.");
-        document.getElementById("startBtn").style.display = "block";
-      }
+      await webcam.setup();
+      await webcam.play();
+      document.getElementById("webcam-container").appendChild(webcam.canvas);
+      window.requestAnimationFrame(loop);
     }
 
     async function loop() {
@@ -154,40 +191,128 @@
 
     async function predict() {
       const prediction = await model.predict(webcam.canvas);
+      let labelContainer = document.getElementById("label-container");
+      labelContainer.innerHTML = "";
+      prediction.forEach(p => {
+        labelContainer.innerHTML += `<p>${p.className}: ${(p.probability * 100).toFixed(2)}%</p>`;
+      });
+
       const best = prediction.reduce((a, b) => a.probability > b.probability ? a : b);
-      const label = best.className;
-      const confidence = best.probability;
 
-      const labelContainer = document.getElementById("label-container");
-      labelContainer.innerHTML = `You are: <span style="color:#e50914;font-weight:bold;">${label}</span>`;
-
-      if (confidence > 0.90 && !detected) {
+      if (best.probability > 0.85 && !detected) {
         detected = true;
-        showLoading(label);
+        showPopup(best.className);
       }
     }
 
-    function showLoading(label) {
-      document.getElementById("loading").style.display = "block";
-      document.getElementById("label-container").innerHTML = "";
+    function showPopup(userGroup) {
+      const popup = document.createElement("div");
+      popup.id = "popup";
+      popup.innerHTML = `
+        <div class="popup-content">
+          <h2>You are <span>${userGroup}</span></h2>
+          <button id="nextBtn">Next ➜</button>
+        </div>
+      `;
+      document.body.appendChild(popup);
+
+      document.getElementById("nextBtn").addEventListener("click", () => {
+        popup.remove();
+        showLoading(userGroup);
+      });
+    }
+
+    function showLoading(userGroup) {
+      const loadingScreen = document.createElement("div");
+      loadingScreen.id = "loading-screen";
+      loadingScreen.innerHTML = `
+        <div class="loader"></div>
+        <p class="loading-text">Loading your movies...</p>
+      `;
+      document.body.appendChild(loadingScreen);
 
       setTimeout(() => {
-        if (label.toLowerCase() === "kids" || label.toLowerCase() === "kid") {
+        loadingScreen.remove();
+        if (userGroup.toLowerCase() === "kids" || userGroup.toLowerCase() === "kid") {
           window.location.href = "kids.html";
-        } else if (label.toLowerCase() === "adult") {
+        } else if (userGroup.toLowerCase() === "adult") {
           window.location.href = "adult.html";
-        } else if (label.toLowerCase() === "senior") {
+        } else if (userGroup.toLowerCase() === "senior") {
           window.location.href = "senior.html";
         } else {
-          alert("Age group not recognized, please try again.");
+          alert("Could not detect age group. Please try again.");
           location.reload();
         }
-      }, 2500);
+      }, 3000);
     }
 
     document.getElementById("startBtn").addEventListener("click", init);
 
-    // Slider
+    const style = document.createElement("style");
+    style.innerHTML = `
+      @keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }
+
+      #popup {
+        position: fixed; top: 0; left: 0;
+        width: 100%; height: 100%;
+        background: rgba(0,0,0,0.8);
+        display: flex; justify-content: center; align-items: center;
+        z-index: 9999;
+      }
+
+      .popup-content {
+        background: #111;
+        border: 2px solid #e50914;
+        padding: 30px 50px;
+        border-radius: 10px;
+        text-align: center;
+        color: white;
+        box-shadow: 0 0 20px rgba(229,9,20,0.6);
+        animation: fadeIn 0.5s ease;
+      }
+
+      .popup-content h2 { font-size: 28px; margin-bottom: 20px; }
+      .popup-content span { color: #e50914; font-weight: bold; }
+
+      #nextBtn {
+        background-color: #e50914; color: white; border: none;
+        padding: 12px 40px; border-radius: 5px; font-size: 18px;
+        cursor: pointer; transition: 0.3s;
+      }
+      #nextBtn:hover { background-color: #b00610; }
+
+      #loading-screen {
+        position: fixed; top: 0; left: 0;
+        width: 100%; height: 100%;
+        background-color: #000;
+        display: flex; flex-direction: column;
+        justify-content: center; align-items: center;
+        color: white; z-index: 99999;
+      }
+
+      .loader {
+        border: 6px solid #f3f3f3;
+        border-top: 6px solid #e50914;
+        border-radius: 50%;
+        width: 70px; height: 70px;
+        animation: spin 1s linear infinite;
+        margin-bottom: 25px;
+      }
+
+      .loading-text {
+        font-size: 20px;
+        letter-spacing: 1px;
+        color: #fff;
+        text-shadow: 0 0 10px rgba(255,255,255,0.4);
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse { 0%, 100% { opacity: 0.7; } 50% { opacity: 1; } }
+      @keyframes fadeIn { from { opacity: 0; transform: scale(0.9);} to { opacity: 1; transform: scale(1);} }
+    `;
+    document.head.appendChild(style);
+
+    // 🎬 سلايدر و النصوص
     const slides = document.querySelectorAll('.slide');
     const prev = document.querySelector('.prev');
     const next = document.querySelector('.next');
@@ -218,7 +343,6 @@
       dotsContainer.appendChild(dot);
     });
 
-    // Marquee
     const marqueeTextElem = document.getElementById('marqueeText');
     const marqueeMessages = [
       "Ageflix recommends movies based on your age",
@@ -237,4 +361,3 @@
   </script>
 </body>
 </html>
-
