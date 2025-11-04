@@ -3,61 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ageflix - Home</title>
+<title>Ageflix - Age Detection</title>
 <style>
-  *{box-sizing:border-box;margin:0;padding:0;font-family: 'Arial Black', Arial, sans-serif;}
-  body{background:#000;color:#fff;}
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
+body { background: #000; color: #fff; font-family: 'Arial', sans-serif; }
 
-  /* Navbar */
-  nav.navbar{display:flex;align-items:center;justify-content:space-between;background:#111;padding:10px 20px;}
-  .navbar .logo{font-size:28px;font-weight:bold;color:#e50914;}
-  .navbar ul{display:flex;list-style:none;flex:2;justify-content:center;}
-  .navbar ul li{margin:0 15px;}
-  .navbar ul li a{color:#fff;text-decoration:none;font-weight:bold;}
-  .navbar .icon{text-align:right;}
+/* Navbar */
+nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
+.navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: #e50914; }
+.navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
+.navbar ul li { margin: 0 15px; }
+.navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
+.navbar .icon { flex: 1; text-align: right; }
 
-  /* Marquee */
-  .marquee-container{width:100%;overflow:hidden;background:#222;color:#fff;font-size:22px;padding:10px 0;position:relative;}
-  .marquee{display:inline-block;white-space:nowrap;animation:marquee 15s linear infinite;}
-  @keyframes marquee{0%{transform:translateX(100%);}100%{transform:translateX(-100%);}}
+/* Marquee */
+.marquee-container { width: 100%; overflow: hidden; background: #222; color: #fff; font-size: 22px; padding: 10px 0; position: relative; }
+.marquee { display: inline-block; white-space: nowrap; animation: marquee 15s linear infinite; }
+@keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
-  /* Slider */
-  .banner-slider{position:relative;overflow:hidden;max-width:100%;height:400px;margin-bottom:20px;background:#000;}
-  .slide{position:absolute;width:100%;height:100%;opacity:0;transition:opacity 1s ease-in-out;}
-  .slide.active{opacity:1;z-index:2;}
-  .slide img{width:100%;height:100%;object-fit:cover;}
-  .prev,.next{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.5);color:#fff;border:none;padding:10px;cursor:pointer;font-size:24px;z-index:3;}
-  .prev{left:10px;} .next{right:10px;}
-  .dots{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);display:flex;gap:8px;z-index:3;}
-  .dot{width:12px;height:12px;border-radius:50%;background:rgba(255,255,255,0.5);cursor:pointer;}
-  .dot.active{background:#fff;}
+/* Banner Slider */
+.banner-slider { position: relative; overflow: hidden; max-width: 100%; height: 400px; margin-bottom:20px; background:#000; }
+.slide { position: absolute; width: 100%; height: 100%; opacity: 0; transition: opacity 1s ease-in-out; }
+.slide.active { opacity: 1; z-index: 2; }
+.slide img { width: 100%; height: 100%; object-fit: cover; }
+.prev, .next { position: absolute; top: 50%; transform: translateY(-50%); background-color: rgba(0,0,0,0.5); color: #fff; border: none; padding: 10px; cursor: pointer; font-size: 24px; z-index: 3; }
+.prev { left: 10px; }
+.next { right: 10px; }
+.dots { position: absolute; bottom: 10px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 3; }
+.dot { width: 12px; height: 12px; border-radius: 50%; background-color: rgba(255,255,255,0.5); cursor: pointer; }
+.dot.active { background-color: #fff; }
 
-  /* Hero / Webcam */
-  section.hero{text-align:center;padding:20px;}
-  section.hero h1{font-size:32px;margin-bottom:10px;}
-  section.hero p{font-size:20px;margin-bottom:20px;}
-  button#startBtn{padding:10px 20px;font-size:18px;cursor:pointer;background:#e50914;border:none;color:#fff;border-radius:5px;transition:.3s;}
-  button#startBtn:hover{background:#b00610;}
-  #webcam-container,#label-container{margin:15px auto;}
+/* Hero / Webcam */
+section.hero { text-align: center; padding: 20px; }
+section.hero h1 { font-size: 32px; margin-bottom: 10px; }
+section.hero p { font-size: 20px; margin-bottom: 20px; }
+button#startBtn { padding: 10px 20px; font-size: 18px; cursor: pointer; background-color:#e50914;color:#fff;border:none;border-radius:5px;transition:0.3s; }
+button#startBtn:hover { background-color:#b00610; }
+#webcam-container, #label-container { margin: 15px auto; }
 
-  /* Popups */
-  #popup,#loading-screen{position:fixed;top:0;left:0;width:100%;height:100%;display:flex;justify-content:center;align-items:center;z-index:9999;}
-  #popup{background:rgba(0,0,0,0.85);}
-  .popup-content{background:#111;border:2px solid #e50914;padding:30px 50px;border-radius:10px;text-align:center;color:white;box-shadow:0 0 20px rgba(229,9,20,0.6);animation:fadeIn 0.5s ease;}
-  .popup-content h2{font-size:28px;margin-bottom:20px;}
-  .popup-content span{color:#e50914;font-weight:bold;}
-  #nextBtn{background-color:#e50914;color:white;border:none;padding:12px 40px;border-radius:5px;font-size:18px;cursor:pointer;transition:0.3s;}
-  #nextBtn:hover{background-color:#b00610;}
-  #loading-screen{background-color:#000;flex-direction:column;color:white;}
-  .loader{border:6px solid #f3f3f3;border-top:6px solid #e50914;border-radius:50%;width:70px;height:70px;animation:spin 1s linear infinite;margin-bottom:25px;}
-  .loading-text{font-size:20px;letter-spacing:1px;color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.4);animation:pulse 1.5s ease-in-out infinite;}
-  @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-  @keyframes pulse{0%,100%{opacity:0.7;}50%{opacity:1;}}
-  @keyframes fadeIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+/* Popups */
+.popup, .loading-popup, .result-popup {
+  position: fixed; top:0; left:0; width:100%; height:100%;
+  background: rgba(0,0,0,0.85); display:flex; justify-content:center; align-items:center; z-index:9999;
+}
+.popup-content, .loading-content, .result-content {
+  background:#111; border:2px solid #e50914; padding:30px 50px; border-radius:15px;
+  text-align:center; color:white; box-shadow:0 0 25px rgba(229,9,20,0.6);
+  animation: fadeIn 0.5s ease;
+  max-width: 90%; width: 500px;
+}
+.popup-content h2, .result-content h2 { font-size:28px; margin-bottom:20px;}
+.popup-content span, .result-content span {color:#e50914;font-weight:bold;}
+#nextBtn, #resultNextBtn {background-color:#e50914;color:white;border:none;padding:12px 40px;border-radius:5px;font-size:18px;cursor:pointer;transition:0.3s;margin-top:15px;}
+#nextBtn:hover, #resultNextBtn:hover{background-color:#b00610;}
+.loader{
+  border:6px solid #f3f3f3; border-top:6px solid #e50914; border-radius:50%;
+  width:70px; height:70px; animation:spin 1s linear infinite; margin:15px auto;
+}
+.loading-text{font-size:20px;letter-spacing:1px;color:#fff;text-shadow:0 0 10px rgba(255,255,255,0.4);}
+#popup-webcam{width:320px;height:240px;margin:15px auto;border:2px solid #e50914;border-radius:10px;}
+.progress-bar-container{background:#333;border-radius:10px;width:100%;height:20px;margin:10px auto;overflow:hidden;}
+.progress-bar{background:#e50914;height:100%;width:0%;transition:width 0.2s;}
 
-  /* Prediction animation */
-  .prediction-item{display:block;margin:5px 0;font-weight:bold;transition:transform .2s,color .2s;}
-  .prediction-item.update{color:#e50914;transform:scale(1.2);}
+/* Animations */
+@keyframes spin { 0%{transform:rotate(0deg);}100%{transform:rotate(360deg);} }
+@keyframes fadeIn{from{opacity:0;transform:scale(0.9);}to{opacity:1;transform:scale(1);}}
+
+/* Responsive */
+@media(max-width:768px){
+  .navbar ul { flex: 1; justify-content: space-around; margin:10px 0; }
+  section.hero h1 { font-size: 24px; }
+  section.hero p { font-size: 16px; }
+  button#startBtn { font-size: 16px; }
+  .marquee-container { font-size: 18px; }
+  .slide img { height: 250px; object-fit: cover; }
+  #popup-webcam{width:250px;height:190px;}
+}
 </style>
 </head>
 <body>
@@ -78,7 +99,7 @@
   <div class="marquee" id="marqueeText"></div>
 </div>
 
-<!-- Slider -->
+<!-- Banner Slider -->
 <section class="banner-slider" id="bannerSlider">
   <div class="slide active"><img src="1.jpg" alt="Banner 1"></div>
   <div class="slide"><img src="2.jpg" alt="Banner 2"></div>
@@ -87,7 +108,7 @@
   <div class="dots"></div>
 </section>
 
-<!-- Hero -->
+<!-- Hero / Age Detection -->
 <section class="hero">
   <h1>Welcome to Ageflix</h1>
   <p>Discover movies according to your age group!</p>
@@ -98,11 +119,11 @@
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
+
 <script>
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
 let model, webcam, maxPredictions;
 let detected = false;
-let predictionText;
 
 async function init() {
   const modelURL = URL + "model.json";
@@ -111,84 +132,99 @@ async function init() {
   maxPredictions = model.getTotalClasses();
 
   const flip = true;
-  webcam = new tmImage.Webcam(400,300,flip);
+  webcam = new tmImage.Webcam(320, 240, flip);
   await webcam.setup();
   await webcam.play();
-  document.getElementById("webcam-container").appendChild(webcam.canvas);
-
-  // Popup with live predictions
-  const popup = document.createElement("div");
-  popup.id = "popup";
-  popup.innerHTML = `<div class="popup-content"><h2>Detecting your age...</h2><div id="predictionText"></div></div>`;
-  document.body.appendChild(popup);
-  predictionText = document.getElementById("predictionText");
-
-  setTimeout(()=>finishDetection(popup),45000); // 45 sec
-
+  
+  showLoadingPopup();
   window.requestAnimationFrame(loop);
 }
 
-const displayedPredictions = {};
-let previousValues = {};
 async function loop() {
   webcam.update();
-  const prediction = await model.predict(webcam.canvas);
-
-  prediction.forEach(p=>{
-    if(!displayedPredictions[p.className]) displayedPredictions[p.className]=0;
-    const target = p.probability*100;
-    if(displayedPredictions[p.className]<target) displayedPredictions[p.className]+=0.5;
-    if(displayedPredictions[p.className]>target) displayedPredictions[p.className]=target;
-  });
-
-  if(predictionText){
-    predictionText.innerHTML='';
-    prediction.forEach(p=>{
-      let span = document.createElement('span');
-      span.classList.add('prediction-item');
-      span.innerText = `${p.className}: ${displayedPredictions[p.className].toFixed(1)}%`;
-      if(!previousValues[p.className] || displayedPredictions[p.className] > previousValues[p.className]){
-        span.classList.add('update');
-        setTimeout(()=>span.classList.remove('update'),200);
-      }
-      previousValues[p.className]=displayedPredictions[p.className];
-      predictionText.appendChild(span);
-    });
-  }
+  await predict();
   if(!detected) window.requestAnimationFrame(loop);
 }
 
-function finishDetection(popup){
-  popup.remove();
-  // find the highest
-  const best = Object.keys(displayedPredictions).reduce((a,b)=>displayedPredictions[a]>displayedPredictions[b]?a:b);
-  if(best.toLowerCase()==="kids"||best.toLowerCase()==="kid") window.location.href="kids.html";
-  else if(best.toLowerCase()==="adult") window.location.href="adult.html";
-  else if(best.toLowerCase()==="senior") window.location.href="senior.html";
-  else location.reload();
+async function predict() {
+  const prediction = await model.predict(webcam.canvas);
+  const labelContainer = document.getElementById("label-container");
+  labelContainer.innerHTML = "";
+  prediction.forEach(p => {
+    labelContainer.innerHTML += `<p>${p.className}: ${(p.probability*100).toFixed(2)}%</p>`;
+  });
+
+  const best = prediction.reduce((a,b)=> a.probability>b.probability?a:b);
+  if(best.probability>0.85 && !detected){
+    detected = true;
+    setTimeout(()=>showResultPopup(best.className),30000); // 30s
+  }
 }
 
-document.getElementById("startBtn").addEventListener("click",init);
+function showLoadingPopup(){
+  const popup = document.createElement("div");
+  popup.className = "loading-popup";
+  popup.id = "loading-screen";
+  popup.innerHTML = `
+    <div class="loading-content">
+      <h2>Detecting Your Age</h2>
+      <div id="popup-webcam"></div>
+      <div class="progress-bar-container"><div class="progress-bar" id="progressBar"></div></div>
+      <p class="loading-text" id="loadingText">30s remaining...</p>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  document.getElementById("popup-webcam").appendChild(webcam.canvas);
+
+  let countdown = 30;
+  const countdownElem = document.getElementById('loadingText');
+  const progressBar = document.getElementById('progressBar');
+  const timer = setInterval(()=>{
+    countdown--;
+    countdownElem.innerText = countdown + "s remaining...";
+    progressBar.style.width = ((30-countdown)/30)*100 + "%";
+    if(countdown<=0){ clearInterval(timer); }
+  },1000);
+}
+
+function showResultPopup(userGroup){
+  const popup = document.createElement("div");
+  popup.className = "result-popup";
+  popup.innerHTML = `
+    <div class="result-content">
+      <h2>You are <span>${userGroup}</span></h2>
+      <button id="resultNextBtn">Next ➜</button>
+    </div>
+  `;
+  document.body.appendChild(popup);
+
+  document.getElementById("resultNextBtn").addEventListener("click", ()=>{
+    popup.remove();
+    if(userGroup.toLowerCase()==="kids"||userGroup.toLowerCase()==="kid") window.location.href="kids.html";
+    else if(userGroup.toLowerCase()==="adult") window.location.href="adult.html";
+    else if(userGroup.toLowerCase()==="senior") window.location.href="senior.html";
+    else location.reload();
+  });
+}
+
+document.getElementById("startBtn").addEventListener("click", init);
 
 // Slider
-const slides=document.querySelectorAll('.slide');
-const prev=document.querySelector('.prev');
-const nextBtn=document.querySelector('.next');
-const dotsContainer=document.querySelector('.dots');
-let slideIndex=0;
-
+const slides = document.querySelectorAll('.slide');
+const prev = document.querySelector('.prev');
+const nextBtn = document.querySelector('.next');
+const dotsContainer = document.querySelector('.dots');
+let slideIndex = 0;
 function showSlide(index){
   if(index<0) slideIndex=slides.length-1;
   else if(index>=slides.length) slideIndex=0;
   else slideIndex=index;
-  slides.forEach((s,i)=>{s.classList.remove('active'); if(dotsContainer.children[i]) dotsContainer.children[i].classList.remove('active');});
+  slides.forEach((s,i)=>{ s.classList.remove('active'); if(dotsContainer.children[i]) dotsContainer.children[i].classList.remove('active'); });
   slides[slideIndex].classList.add('active');
   if(dotsContainer.children[slideIndex]) dotsContainer.children[slideIndex].classList.add('active');
 }
-
 prev.addEventListener('click',()=>showSlide(slideIndex-1));
 nextBtn.addEventListener('click',()=>showSlide(slideIndex+1));
-
 slides.forEach((_,i)=>{
   const dot=document.createElement('span');
   dot.classList.add('dot');
@@ -206,8 +242,11 @@ const marqueeMessages = [
   "Discover films suitable for your age",
   "Enjoy movies safely with Ageflix"
 ];
-let marqueeIndex=0;
-function updateMarquee(){marqueeTextElem.innerText=marqueeMessages[marqueeIndex];marqueeIndex=(marqueeIndex+1)%marqueeMessages.length;}
+let marqueeIndex = 0;
+function updateMarquee(){
+  marqueeTextElem.innerText = marqueeMessages[marqueeIndex];
+  marqueeIndex=(marqueeIndex+1)%marqueeMessages.length;
+}
 setInterval(updateMarquee,5000);
 updateMarquee();
 </script>
