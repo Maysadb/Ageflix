@@ -1,147 +1,168 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Ageflix - Home</title>
-  <style>
-    * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
-    body { background: #f0f0f0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ageflix - Home</title>
+<style>
+  * { box-sizing: border-box; margin:0; padding:0; font-family: 'Roboto', sans-serif; }
+  body { background: #000; color: #fff; overflow-x: hidden; }
 
-    /* Navbar */
-    nav.navbar {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background-color: #111;
-      color: #fff;
-      padding: 10px 20px;
-      flex-wrap: wrap;
-    }
-    .navbar .logo { font-size: 24px; font-weight: bold; color: red; }
-    .navbar ul { display: flex; list-style: none; justify-content: center; gap: 20px; }
-    .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
+  /* خلفية فيديو */
+  .video-bg {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    filter: brightness(0.35) blur(2px);
+  }
 
-    /* Marquee */
-    .marquee-container {
-      width: 100%;
-      overflow: hidden;
-      background: #222;
-      color: #fff;
-      font-size: 22px;
-      padding: 10px 0;
-      position: relative;
-    }
-    .marquee {
-      display: inline-block;
-      white-space: nowrap;
-      animation: marquee 15s linear infinite;
-    }
-    @keyframes marquee {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
+  /* Navbar */
+  nav.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(8px);
+    padding: 15px 25px;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+  }
+  .navbar .logo { font-size: 28px; font-weight: bold; color: #e50914; }
+  .navbar ul { display: flex; list-style: none; align-items: center; }
+  .navbar ul li { margin: 0 15px; position: relative; }
+  .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
+  .navbar ul li a:hover { color:#e50914; }
 
-    /* Slider */
-    .banner-slider {
-      position: relative;
-      width: 100%;
-      height: 600px;
-      overflow: hidden;
-      background: #000;
-    }
-    .banner-slider img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      position: absolute;
-      opacity: 0;
-      transition: opacity 1s ease-in-out;
-    }
-    .banner-slider img.active {
-      opacity: 1;
-    }
+  /* Dropdown */
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    top: 100%; left: 0;
+    background-color: #222;
+    padding: 10px 0;
+    min-width: 130px;
+    border-radius: 5px;
+    z-index: 10;
+  }
+  .dropdown-content a {
+    display: block;
+    color: #fff;
+    padding: 8px 15px;
+    text-decoration: none;
+  }
+  .dropdown-content a:hover { background-color: #e50914; }
+  .navbar ul li:hover .dropdown-content { display: block; }
 
-    .prev, .next {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background-color: rgba(0,0,0,0.5);
-      color: #fff;
-      border: none;
-      padding: 10px;
-      cursor: pointer;
-      font-size: 24px;
-      z-index: 10;
-    }
-    .prev { left: 15px; }
-    .next { right: 15px; }
+  /* Hero Section */
+  section.hero {
+    text-align: center;
+    padding: 140px 20px;
+  }
+  section.hero h1 {
+    font-size: 48px;
+    margin-bottom: 20px;
+    color: #fff;
+    text-shadow: 0 0 25px rgba(255,255,255,0.2);
+  }
+  section.hero p {
+    font-size: 20px;
+    color: #bbb;
+    margin-bottom: 40px;
+  }
 
-    /* Dots */
-    .dots {
-      position: absolute;
-      bottom: 15px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 8px;
-    }
-    .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background-color: rgba(255,255,255,0.5);
-      cursor: pointer;
-    }
-    .dot.active { background-color: white; }
+  /* Start Button */
+  #startBtn {
+    padding: 15px 50px;
+    font-size: 22px;
+    background-color: #e50914;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-weight: bold;
+    cursor: pointer;
+    letter-spacing: 1px;
+    box-shadow: 0 0 20px rgba(229,9,20,0.6);
+    transition: all 0.3s ease;
+  }
+  #startBtn:hover {
+    background-color: #b00610;
+    transform: scale(1.08);
+    box-shadow: 0 0 25px rgba(229,9,20,0.8);
+  }
 
-    /* Hero */
-    section.hero {
-      text-align: center;
-      padding: 30px 10px;
-    }
-    section.hero h1 { font-size: 32px; margin-bottom: 10px; }
-    section.hero p { font-size: 20px; margin-bottom: 20px; }
-    #startBtn {
-      padding: 10px 20px;
-      font-size: 18px;
-      cursor: pointer;
-    }
-    #webcam-container, #label-container { margin-top: 20px; }
+  #webcam-container canvas {
+    border: 2px solid #e50914;
+    border-radius: 8px;
+    margin-top: 20px;
+    box-shadow: 0 0 20px rgba(229,9,20,0.4);
+  }
 
-    @media(max-width:768px){
-      .banner-slider { height: 350px; }
-      section.hero h1 { font-size: 24px; }
-      section.hero p { font-size: 16px; }
-    }
-  </style>
+  /* Popup */
+  #popup {
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.85);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+  }
+  .popup-content {
+    background: #111;
+    border: 2px solid #e50914;
+    padding: 30px 50px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 0 25px rgba(229,9,20,0.7);
+    animation: fadeIn 0.5s ease;
+  }
+  .popup-content h2 { font-size: 28px; margin-bottom: 15px; }
+  .popup-content span { color: #e50914; font-weight: bold; }
+  #nextBtn {
+    background-color: #e50914;
+    color: white;
+    border: none;
+    padding: 12px 45px;
+    border-radius: 5px;
+    font-size: 18px;
+    cursor: pointer;
+    transition: 0.3s;
+  }
+  #nextBtn:hover { background-color: #b00610; }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+  }
+</style>
 </head>
 <body>
+
+  <!-- Background Video -->
+  <video autoplay muted loop class="video-bg">
+    <source src="netflix-bg.mp4" type="video/mp4">
+  </video>
 
   <!-- Navbar -->
   <nav class="navbar">
     <div class="logo">Ageflix</div>
     <ul>
-      <li><a href="#">About</a></li>
-      <li><a href="#">Movies</a></li>
-      <li><a href="#">Contact</a></li>
+      <li><a href="about.html">About</a></li>
+      <li>
+        <a href="#">Movies ▾</a>
+        <div class="dropdown-content">
+          <a href="kids.html">Kids</a>
+          <a href="adult.html">Adult</a>
+          <a href="senior.html">Senior</a>
+        </div>
+      </li>
+      <li><a href="contact.html">Contact</a></li>
     </ul>
   </nav>
-
-  <!-- Marquee -->
-  <div class="marquee-container">
-    <div class="marquee" id="marqueeText"></div>
-  </div>
-
-  <!-- Slider -->
-  <section class="banner-slider">
-    <img src="https://picsum.photos/id/1018/1600/600" class="active" alt="Banner 1" />
-    <img src="https://picsum.photos/id/1025/1600/600" alt="Banner 2" />
-    <img src="https://picsum.photos/id/1039/1600/600" alt="Banner 3" />
-    <button class="prev">&#10094;</button>
-    <button class="next">&#10095;</button>
-    <div class="dots"></div>
-  </section>
 
   <!-- Hero -->
   <section class="hero">
@@ -154,12 +175,20 @@
     <button id="startBtn">Start Camera & Detect Age</button>
   </section>
 
+  <!-- Popup -->
+  <div id="popup">
+    <div class="popup-content">
+      <h2 id="ageGroupText"></h2>
+      <p>We will suggest movies suitable for you.</p>
+      <button id="nextBtn">Next ➜</button>
+    </div>
+  </div>
+
   <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 
   <script>
-    // Teachable Machine
     const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
     let model, webcam, maxPredictions;
 
@@ -185,72 +214,28 @@
 
     async function predict() {
       const prediction = await model.predict(webcam.canvas);
-      let labelContainer = document.getElementById("label-container");
-      labelContainer.innerHTML = "";
-      prediction.forEach(p => {
-        labelContainer.innerHTML += `<p>${p.className}: ${(p.probability * 100).toFixed(2)}%</p>`;
-      });
-
-      const best = prediction.reduce((a,b)=>a.probability>b.probability?a:b);
-      if(best.probability>0.8){
-        let message = "";
-        let page = "";
-        if(best.className.toLowerCase()==="kids"){ message="You are a Kid! Redirecting to Kids page..."; page="kids.html"; }
-        if(best.className.toLowerCase()==="adult"){ message="You are an Adult! Redirecting to Adult page..."; page="adult.html"; }
-        if(best.className.toLowerCase()==="senior"){ message="You are a Senior! Redirecting to Senior page..."; page="senior.html"; }
-
-        alert(message);
-        window.location.href = page;
+      const best = prediction.reduce((a,b) => a.probability > b.probability ? a : b);
+      if(best.probability > 0.85) {
+        showPopup(best.className);
       }
     }
 
+    function showPopup(group) {
+      const popup = document.getElementById("popup");
+      const text = document.getElementById("ageGroupText");
+      text.innerHTML = `Detected Age Group: <span>${group}</span>`;
+      popup.style.display = "flex";
+
+      document.getElementById("nextBtn").onclick = function() {
+        popup.style.display = "none";
+        if(group.toLowerCase() === "kids") window.location.href = "kids.html";
+        else if(group.toLowerCase() === "adult") window.location.href = "adult.html";
+        else if(group.toLowerCase() === "senior") window.location.href = "senior.html";
+      };
+    }
+
     document.getElementById("startBtn").addEventListener("click", init);
-
-    // Slider JS
-    const slides = document.querySelectorAll('.banner-slider img');
-    const dotsContainer = document.querySelector('.dots');
-    const prev = document.querySelector('.prev');
-    const next = document.querySelector('.next');
-    let index = 0;
-
-    // Create dots
-    slides.forEach((_, i) => {
-      const dot = document.createElement('span');
-      dot.classList.add('dot');
-      if(i === 0) dot.classList.add('active');
-      dot.addEventListener('click', () => showSlide(i));
-      dotsContainer.appendChild(dot);
-    });
-
-    function showSlide(i){
-      slides.forEach((img, n)=> img.classList.toggle('active', n===i));
-      [...dotsContainer.children].forEach((d,n)=>d.classList.toggle('active', n===i));
-      index = i;
-    }
-
-    prev.addEventListener('click', ()=> showSlide((index - 1 + slides.length) % slides.length));
-    next.addEventListener('click', ()=> showSlide((index + 1) % slides.length));
-
-    // Auto change every 5 seconds
-    setInterval(()=> showSlide((index + 1) % slides.length), 5000);
-
-    // Marquee messages
-    const marqueeTextElem = document.getElementById('marqueeText');
-    const marqueeMessages = [
-      "Ageflix recommends movies based on your age",
-      "Find the perfect movie for kids, adults, and seniors",
-      "Your personalized movie guide!",
-      "Discover films suitable for your age",
-      "Enjoy movies safely with Ageflix"
-    ];
-    let marqueeIndex = 0;
-
-    function updateMarquee(){
-      marqueeTextElem.innerText = marqueeMessages[marqueeIndex];
-      marqueeIndex = (marqueeIndex+1) % marqueeMessages.length;
-    }
-    setInterval(updateMarquee, 5000);
-    updateMarquee();
   </script>
+
 </body>
 </html>
