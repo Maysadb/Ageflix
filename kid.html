@@ -35,9 +35,9 @@
   #webcam-container video, #webcam-container canvas {
     border:2px solid #e50914; 
     border-radius:10px;
-    width: 100%;       /* يجعل العرض متجاوب */
-    max-width: 300px;  /* حجم أصغر للكميرا */
-    height: auto;      /* يحافظ على النسبة */
+    width: 100%;
+    max-width: 300px;
+    height: auto;
   }
 </style>
 </head>
@@ -95,7 +95,7 @@ function showPopupAnalysis(){
   document.body.appendChild(popup);
   document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-  let totalTime = 20;
+  let totalTime = 30; // ← المدة الجديدة 30 ثانية
   let seconds = totalTime;
   const countdownFill = document.getElementById("countdown-fill");
   const labelContainer = document.getElementById("label-container");
