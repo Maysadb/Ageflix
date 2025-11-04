@@ -6,28 +6,214 @@
 <title>Ageflix - Adult Movies</title>
 <style>
   * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
-  body { background: #111; color: #fff; }
-  nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
+  body { background: #111; color: #fff; overflow-x: hidden; }
+
+  /* Navbar */
+  nav.navbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background-color: #111;
+    color: #fff;
+    padding: 10px 20px;
+    flex-wrap: wrap;
+    position: relative;
+    z-index: 10;
+  }
   .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: red; }
   .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
   .navbar ul li { margin: 0 15px; }
   .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
   .navbar .icon { flex: 1; text-align: right; }
 
-  .movies-container { display: grid; grid-template-columns: repeat(auto-fit,minmax(200px,1fr)); gap: 15px; padding: 20px; }
-  .movie-card { position: relative; cursor: pointer; border-radius: 10px; overflow: hidden; transition: transform 0.3s; }
-  .movie-card img { width: 100%; height: 300px; object-fit: cover; border-radius: 10px; }
+  /* Hero Section with Video Background */
+  .page-intro {
+    position: relative;
+    height: 65vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    color: #fff;
+    overflow: hidden;
+  }
+
+  .page-intro video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: 1;
+    animation: slowZoom 20s ease-in-out infinite alternate;
+    filter: brightness(80%);
+  }
+
+  /* Overlay */
+  .page-intro::after {
+    content: "";
+    position: absolute;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.6);
+    z-index: 2;
+  }
+
+  .page-intro-content {
+    position: relative;
+    z-index: 3;
+    animation: fadeIn 2s ease-in-out;
+    padding: 20px;
+  }
+
+  .page-intro-content h1 {
+    font-size: 48px;
+    color: #e50914;
+    margin-bottom: 15px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    animation: textZoom 8s ease-in-out infinite alternate;
+  }
+
+  .page-intro-content p {
+    font-size: 18px;
+    color: #ddd;
+    max-width: 700px;
+    margin: 0 auto 25px;
+    line-height: 1.6;
+  }
+
+  /* Watch Now Button */
+  .watch-btn {
+    display: inline-block;
+    padding: 12px 28px;
+    background-color: #e50914;
+    color: #fff;
+    text-decoration: none;
+    font-weight: bold;
+    border-radius: 30px;
+    font-size: 18px;
+    transition: 0.3s;
+    animation: pulse 2s infinite;
+  }
+
+  .watch-btn:hover {
+    background-color: #f40612;
+    transform: scale(1.05);
+  }
+
+  /* Keyframes */
+  @keyframes fadeIn {
+    0% { opacity: 0; transform: translateY(-20px); }
+    100% { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes slowZoom {
+    from { transform: scale(1); }
+    to { transform: scale(1.1); }
+  }
+
+  @keyframes textZoom {
+    0% { transform: scale(1); opacity: 0.9; }
+    100% { transform: scale(1.08); opacity: 1; }
+  }
+
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(229,9,20,0.4); }
+    50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(229,9,20,0.8); }
+  }
+
+  /* Movies grid */
+  .movies-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+    gap: 15px;
+    padding: 30px 20px;
+  }
+
+  .movie-card {
+    position: relative;
+    cursor: pointer;
+    border-radius: 10px;
+    overflow: hidden;
+    transition: transform 0.3s;
+  }
+
+  .movie-card img {
+    width: 100%;
+    height: 300px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+
   .movie-card:hover { transform: scale(1.05); }
 
-  #movie-popup { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index: 9999; display:none; }
-  .popup-content { background: #111; border: 2px solid #e50914; border-radius:10px; padding: 30px; max-width: 500px; text-align:center; position: relative; }
-  .popup-content img { width: 100%; height: auto; border-radius:10px; margin-bottom:15px; }
-  .popup-content h2 { font-size: 24px; color: #e50914; margin-bottom:10px; }
-  .popup-content p { font-size:16px; margin-bottom:5px; }
-  #popup-trailer { width:100%; height:250px; border:none; margin-top:10px; border-radius:10px; }
-  .close-btn { position: absolute; top:10px; right:10px; background:#e50914; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; }
+  /* Popup */
+  #movie-popup {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.9);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    z-index: 9999;
+    display:none;
+  }
+
+  .popup-content {
+    background: #111;
+    border: 2px solid #e50914;
+    border-radius:10px;
+    padding: 30px;
+    max-width: 500px;
+    text-align:center;
+    position: relative;
+  }
+
+  .popup-content img {
+    width: 100%;
+    height: auto;
+    border-radius:10px;
+    margin-bottom:15px;
+  }
+
+  .popup-content h2 {
+    font-size: 24px;
+    color: #e50914;
+    margin-bottom:10px;
+  }
+
+  .popup-content p {
+    font-size:16px;
+    margin-bottom:5px;
+  }
+
+  #popup-trailer {
+    width:100%;
+    height:250px;
+    border:none;
+    margin-top:10px;
+    border-radius:10px;
+  }
+
+  .close-btn {
+    position: absolute;
+    top:10px;
+    right:10px;
+    background:#e50914;
+    color:white;
+    border:none;
+    border-radius:5px;
+    padding:5px 10px;
+    cursor:pointer;
+  }
 
   @media(max-width:768px){
+    .page-intro { height: 45vh; }
+    .page-intro-content h1 { font-size: 32px; }
+    .page-intro-content p { font-size: 16px; padding: 0 15px; }
     .movie-card img{height:200px;}
     .popup-content { width: 90%; }
     #popup-trailer { height:180px; }
@@ -36,6 +222,7 @@
 </head>
 <body>
 
+<!-- Navbar -->
 <nav class="navbar">
   <div class="logo">Ageflix</div>
   <ul>
@@ -46,7 +233,20 @@
   <div class="icon">🎬</div>
 </nav>
 
-<section class="movies-container">
+<!-- Intro Section with Background Video -->
+<section class="page-intro">
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4" type="video/mp4">
+  </video>
+  <div class="page-intro-content">
+    <h1>Adult Movies</h1>
+    <p>Welcome to the Adult Movies section — enjoy thrilling stories, passionate adventures, and cinematic experiences made for mature audiences.</p>
+    <a href="#movies" class="watch-btn">▶ Watch Now</a>
+  </div>
+</section>
+
+<!-- Movies -->
+<section id="movies" class="movies-container">
   <div class="movie-card"
        data-title="Action Hero"
        data-summary="An intense action-packed movie for adults."
@@ -84,6 +284,7 @@
   </div>
 </section>
 
+<!-- Popup -->
 <div id="movie-popup">
   <div class="popup-content">
     <button class="close-btn">X</button>
