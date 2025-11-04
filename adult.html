@@ -9,214 +9,114 @@
   body { background: #111; color: #fff; overflow-x: hidden; }
 
   /* Navbar */
-  nav.navbar {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background-color: #111;
-    color: #fff;
-    padding: 10px 20px;
-    flex-wrap: wrap;
-    position: relative;
-    z-index: 10;
-  }
+  nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
   .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: red; }
   .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
   .navbar ul li { margin: 0 15px; }
   .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
   .navbar .icon { flex: 1; text-align: right; }
 
-  /* Hero Section with Video Background */
-  .page-intro {
-    position: relative;
-    height: 65vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    color: #fff;
-    overflow: hidden;
-  }
-
-  .page-intro video {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    z-index: 1;
-    animation: slowZoom 20s ease-in-out infinite alternate;
-    filter: brightness(80%);
-  }
-
-  /* Overlay */
-  .page-intro::after {
-    content: "";
-    position: absolute;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.6);
-    z-index: 2;
-  }
-
-  .page-intro-content {
-    position: relative;
-    z-index: 3;
-    animation: fadeIn 2s ease-in-out;
-    padding: 20px;
-  }
-
-  .page-intro-content h1 {
-    font-size: 48px;
-    color: #e50914;
-    margin-bottom: 15px;
-    letter-spacing: 2px;
-    text-transform: uppercase;
-    animation: textZoom 8s ease-in-out infinite alternate;
-  }
-
-  .page-intro-content p {
-    font-size: 18px;
-    color: #ddd;
-    max-width: 700px;
-    margin: 0 auto 25px;
-    line-height: 1.6;
-  }
-
-  /* Watch Now Button */
-  .watch-btn {
-    display: inline-block;
-    padding: 12px 28px;
-    background-color: #e50914;
-    color: #fff;
-    text-decoration: none;
+  /* Section Title */
+  .section-title {
+    font-size: 28px;
     font-weight: bold;
-    border-radius: 30px;
-    font-size: 18px;
-    transition: 0.3s;
-    animation: pulse 2s infinite;
+    color: #e50914;
+    margin: 25px 20px 10px;
+    letter-spacing: 1px;
   }
 
-  .watch-btn:hover {
-    background-color: #f40612;
-    transform: scale(1.05);
+  /* Netflix style movie row wrapper */
+  .movie-row-wrapper {
+    position: relative;
+    padding: 0 40px; /* space for arrows */
   }
 
-  /* Keyframes */
-  @keyframes fadeIn {
-    0% { opacity: 0; transform: translateY(-20px); }
-    100% { opacity: 1; transform: translateY(0); }
-  }
-
-  @keyframes slowZoom {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
-  }
-
-  @keyframes textZoom {
-    0% { transform: scale(1); opacity: 0.9; }
-    100% { transform: scale(1.08); opacity: 1; }
-  }
-
-  @keyframes pulse {
-    0%, 100% { transform: scale(1); box-shadow: 0 0 10px rgba(229,9,20,0.4); }
-    50% { transform: scale(1.05); box-shadow: 0 0 20px rgba(229,9,20,0.8); }
-  }
-
-  /* Movies grid */
-  .movies-container {
-    display: grid;
-    grid-template-columns: repeat(auto-fit,minmax(200px,1fr));
+  /* Netflix style movie row */
+  .movie-row {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
     gap: 15px;
-    padding: 30px 20px;
+    padding: 20px 0;
   }
+
+  .movie-row::-webkit-scrollbar { display: none; } /* hide scrollbar */
 
   .movie-card {
+    flex: 0 0 auto;
+    width: 220px;
     position: relative;
     cursor: pointer;
     border-radius: 10px;
     overflow: hidden;
-    transition: transform 0.3s;
+    transition: transform 0.3s, box-shadow 0.3s;
   }
 
   .movie-card img {
     width: 100%;
-    height: 300px;
+    height: 320px;
     object-fit: cover;
     border-radius: 10px;
   }
 
-  .movie-card:hover { transform: scale(1.05); }
+  .movie-card:hover {
+    transform: scale(1.1);
+    z-index: 10;
+  }
+
+  .movie-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 10px;
+    background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+    color: #fff;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  /* Arrows */
+  .arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(0,0,0,0.6);
+    border: none;
+    color: #fff;
+    font-size: 30px;
+    cursor: pointer;
+    padding: 10px;
+    border-radius: 50%;
+    z-index: 20;
+    transition: background 0.3s;
+  }
+  .arrow:hover { background: rgba(229,9,20,0.8); }
+  .arrow-left { left: 0; }
+  .arrow-right { right: 0; }
 
   /* Popup */
-  #movie-popup {
-    position: fixed;
-    top:0; left:0;
-    width:100%; height:100%;
-    background: rgba(0,0,0,0.9);
-    display:flex;
-    justify-content:center;
-    align-items:center;
-    z-index: 9999;
-    display:none;
+  #movie-popup { 
+    position: fixed; top:0; left:0; width:100%; height:100%; 
+    background: rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; 
+    z-index: 9999; display:none; 
   }
-
-  .popup-content {
-    background: #111;
-    border: 2px solid #e50914;
-    border-radius:10px;
-    padding: 30px;
-    max-width: 500px;
-    text-align:center;
-    position: relative;
+  .popup-content { 
+    background: #111; border: 2px solid #e50914; border-radius:10px; 
+    padding: 30px; max-width: 500px; text-align:center; position: relative; 
   }
-
-  .popup-content img {
-    width: 100%;
-    height: auto;
-    border-radius:10px;
-    margin-bottom:15px;
-  }
-
-  .popup-content h2 {
-    font-size: 24px;
-    color: #e50914;
-    margin-bottom:10px;
-  }
-
-  .popup-content p {
-    font-size:16px;
-    margin-bottom:5px;
-  }
-
-  #popup-trailer {
-    width:100%;
-    height:250px;
-    border:none;
-    margin-top:10px;
-    border-radius:10px;
-  }
-
-  .close-btn {
-    position: absolute;
-    top:10px;
-    right:10px;
-    background:#e50914;
-    color:white;
-    border:none;
-    border-radius:5px;
-    padding:5px 10px;
-    cursor:pointer;
-  }
+  .popup-content img { width: 100%; height: auto; border-radius:10px; margin-bottom:15px; }
+  .popup-content h2 { font-size: 24px; color: #e50914; margin-bottom:10px; }
+  .popup-content p { font-size:16px; margin-bottom:5px; }
+  #popup-trailer { width:100%; height:250px; border:none; margin-top:10px; border-radius:10px; }
+  .close-btn { position: absolute; top:10px; right:10px; background:#e50914; color:white; border:none; border-radius:5px; padding:5px 10px; cursor:pointer; }
 
   @media(max-width:768px){
-    .page-intro { height: 45vh; }
-    .page-intro-content h1 { font-size: 32px; }
-    .page-intro-content p { font-size: 16px; padding: 0 15px; }
-    .movie-card img{height:200px;}
+    .movie-card { width: 160px; }
+    .movie-card img { height: 240px; }
     .popup-content { width: 90%; }
     #popup-trailer { height:180px; }
+    .arrow { font-size: 24px; padding: 7px; }
   }
 </style>
 </head>
@@ -233,56 +133,65 @@
   <div class="icon">🎬</div>
 </nav>
 
-<!-- Intro Section with Background Video -->
-<section class="page-intro">
-  <video autoplay muted loop>
-    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4" type="video/mp4">
-  </video>
-  <div class="page-intro-content">
-    <h1>Adult Movies</h1>
-    <p>Welcome to the Adult Movies section — enjoy thrilling stories, passionate adventures, and cinematic experiences made for mature audiences.</p>
-    <a href="#movies" class="watch-btn">▶ Watch Now</a>
-  </div>
-</section>
+<!-- Section Title -->
+<h2 class="section-title">Adult Movies</h2>
 
-<!-- Movies -->
-<section id="movies" class="movies-container">
-  <div class="movie-card"
-       data-title="Action Hero"
-       data-summary="An intense action-packed movie for adults."
-       data-actors="Tom Cruise, Emily Blunt"
-       data-img="https://picsum.photos/400/300?random=5"
-       data-trailer="https://www.youtube.com/embed/5PSNL1qE6VY">
-    <img src="https://picsum.photos/400/300?random=5" alt="Action Hero">
-  </div>
+<!-- Netflix Style Row with arrows -->
+<div class="movie-row-wrapper">
+  <button class="arrow arrow-left">&#10094;</button>
+  <div class="movie-row">
+    <div class="movie-card"
+         data-title="Action Hero"
+         data-summary="An intense action-packed movie for adults."
+         data-actors="Tom Cruise, Emily Blunt"
+         data-img="https://picsum.photos/400/300?random=5"
+         data-trailer="https://www.youtube.com/embed/5PSNL1qE6VY">
+      <img src="https://picsum.photos/400/300?random=5" alt="Action Hero">
+      <div class="movie-overlay">Action Hero</div>
+    </div>
 
-  <div class="movie-card"
-       data-title="Romantic Escape"
-       data-summary="A romantic story with thrilling adventures."
-       data-actors="Ryan Gosling, Emma Stone"
-       data-img="https://picsum.photos/400/300?random=6"
-       data-trailer="https://www.youtube.com/embed/3mE2KnZlFvk">
-    <img src="https://picsum.photos/400/300?random=6" alt="Romantic Escape">
-  </div>
+    <div class="movie-card"
+         data-title="Romantic Escape"
+         data-summary="A romantic story with thrilling adventures."
+         data-actors="Ryan Gosling, Emma Stone"
+         data-img="https://picsum.photos/400/300?random=6"
+         data-trailer="https://www.youtube.com/embed/3mE2KnZlFvk">
+      <img src="https://picsum.photos/400/300?random=6" alt="Romantic Escape">
+      <div class="movie-overlay">Romantic Escape</div>
+    </div>
 
-  <div class="movie-card"
-       data-title="Mystery Island"
-       data-summary="A group of friends explore a mysterious island."
-       data-actors="Chris Hemsworth, Natalie Portman"
-       data-img="https://picsum.photos/400/300?random=7"
-       data-trailer="https://www.youtube.com/embed/0U5v2nqj_EE">
-    <img src="https://picsum.photos/400/300?random=7" alt="Mystery Island">
-  </div>
+    <div class="movie-card"
+         data-title="Mystery Island"
+         data-summary="A group of friends explore a mysterious island."
+         data-actors="Chris Hemsworth, Natalie Portman"
+         data-img="https://picsum.photos/400/300?random=7"
+         data-trailer="https://www.youtube.com/embed/0U5v2nqj_EE">
+      <img src="https://picsum.photos/400/300?random=7" alt="Mystery Island">
+      <div class="movie-overlay">Mystery Island</div>
+    </div>
 
-  <div class="movie-card"
-       data-title="Thrill Night"
-       data-summary="A suspense thriller full of twists and surprises."
-       data-actors="Scarlett Johansson, Robert Downey Jr."
-       data-img="https://picsum.photos/400/300?random=8"
-       data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ">
-    <img src="https://picsum.photos/400/300?random=8" alt="Thrill Night">
+    <div class="movie-card"
+         data-title="Thrill Night"
+         data-summary="A suspense thriller full of twists and surprises."
+         data-actors="Scarlett Johansson, Robert Downey Jr."
+         data-img="https://picsum.photos/400/300?random=8"
+         data-trailer="https://www.youtube.com/embed/dQw4w9WgXcQ">
+      <img src="https://picsum.photos/400/300?random=8" alt="Thrill Night">
+      <div class="movie-overlay">Thrill Night</div>
+    </div>
+
+    <div class="movie-card"
+         data-title="Silent Shadow"
+         data-summary="A mysterious killer lurks in the dark alleys."
+         data-actors="Keanu Reeves, Charlize Theron"
+         data-img="https://picsum.photos/400/300?random=9"
+         data-trailer="https://www.youtube.com/embed/2AUmvWm5ZDQ">
+      <img src="https://picsum.photos/400/300?random=9" alt="Silent Shadow">
+      <div class="movie-overlay">Silent Shadow</div>
+    </div>
   </div>
-</section>
+  <button class="arrow arrow-right">&#10095;</button>
+</div>
 
 <!-- Popup -->
 <div id="movie-popup">
@@ -306,6 +215,7 @@
   const popupTrailer = document.getElementById('popup-trailer');
   const closeBtn = document.querySelector('.close-btn');
 
+  // Open popup
   movieCards.forEach(card => {
     card.addEventListener('click', () => {
       popupImg.src = card.dataset.img;
@@ -317,9 +227,23 @@
     });
   });
 
+  // Close popup
   closeBtn.addEventListener('click', () => {
     popup.style.display = "none";
     popupTrailer.src = "";
+  });
+
+  // Arrow scrolling
+  const movieRow = document.querySelector('.movie-row');
+  const leftArrow = document.querySelector('.arrow-left');
+  const rightArrow = document.querySelector('.arrow-right');
+
+  leftArrow.addEventListener('click', () => {
+    movieRow.scrollBy({ left: -300, behavior: 'smooth' });
+  });
+
+  rightArrow.addEventListener('click', () => {
+    movieRow.scrollBy({ left: 300, behavior: 'smooth' });
   });
 </script>
 
