@@ -26,9 +26,9 @@
   .loader{border:6px solid #f3f3f3;border-top:6px solid red;border-radius:50%;width:70px;height:70px;animation:spin 1s linear infinite;margin-bottom:25px;}
   @keyframes spin{0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
   #countdown-bar{width:100%;height:20px;background:#444;border-radius:10px;margin-top:15px;overflow:hidden;}
-  #countdown-fill{width:100%;height:100%;background:red;}
-  #label-container{font-size:20px;margin-top:15px;}
-  #webcam-canvas{border:2px solid red;border-radius:10px;margin-top:15px;}
+  #countdown-fill{width:100%;height:100%;background:red;transition:width 1s linear;}
+  #label-container{font-size:20px;margin-top:10px;}
+  #webcam-canvas{border:5px solid red;border-radius:10px;box-shadow:0 0 20px red;transition:box-shadow 0.5s ease;}
 </style>
 </head>
 <body>
@@ -70,10 +70,10 @@ async function initTM(){
   await webcam.setup();
   await webcam.play();
 
-  showPopup();
+  showAnalysis();
 }
 
-function showPopup(){
+function showAnalysis(){
   const popup=document.createElement("div");
   popup.id="popup";
   popup.innerHTML=`
@@ -86,7 +86,8 @@ function showPopup(){
   `;
   document.body.appendChild(popup);
 
-  document.getElementById("webcam-canvas").replaceWith(webcam.canvas);
+  const canvasEl = document.getElementById("webcam-canvas");
+  canvasEl.replaceWith(webcam.canvas);
   webcam.canvas.id="webcam-canvas";
 
   let totalTime=20;
@@ -101,8 +102,11 @@ function showPopup(){
       labelContainer.innerHTML+=`${p.className}: ${(p.probability*100).toFixed(1)}%<br>`;
     });
 
-    // Update countdown bar
     countdownFill.style.width = `${(seconds/totalTime)*100}%`;
+
+    // Glow effect
+    const glowIntensity = Math.floor(Math.random()*30)+20;
+    webcam.canvas.style.boxShadow = `0 0 ${glowIntensity}px red`;
 
     seconds--;
     if(seconds<0){
@@ -118,18 +122,9 @@ function showResult(prediction){
   popup.innerHTML=`
     <div class="popup-content">
       <h2>Your age group is <span>${best.className}</span></h2>
-      <canvas id="webcam-canvas" width="400" height="300"></canvas>
-      <div id="label-container"></div>
       <button id="nextBtn">Next ➜</button>
     </div>
   `;
-  document.getElementById("webcam-canvas").replaceWith(webcam.canvas);
-  webcam.canvas.id="webcam-canvas";
-
-  const labelContainer = document.getElementById("label-container");
-  prediction.forEach(p=>{
-    labelContainer.innerHTML+=`${p.className}: ${(p.probability*100).toFixed(1)}%<br>`;
-  });
 
   document.getElementById("nextBtn").addEventListener("click",()=>{
     popup.innerHTML=`<div class="popup-content"><div class="loader"></div><p>Loading your suitable movies...</p></div>`;
