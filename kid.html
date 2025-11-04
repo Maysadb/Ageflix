@@ -32,7 +32,13 @@
   #countdown-bar {width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden;}
   #countdown-fill {width:0%; height:100%; background:#e50914; transition:width 1s linear;}
   #label-container {font-size:20px; margin-top:10px; text-align:left;}
-  #webcam-container video, #webcam-container canvas {border:2px solid #e50914; border-radius:10px;}
+  #webcam-container video, #webcam-container canvas {
+    border:2px solid #e50914; 
+    border-radius:10px;
+    width: 100%;       /* يجعل العرض متجاوب */
+    max-width: 300px;  /* حجم أصغر للكميرا */
+    height: auto;      /* يحافظ على النسبة */
+  }
 </style>
 </head>
 <body>
@@ -54,7 +60,7 @@
   <div class="dots"></div>
 </div>
 
-<button id="startBtn">Start Camera & Detect Age</button>
+<button id="startBtn">Start Camera & Detect Age</button>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
@@ -171,4 +177,3 @@ document.getElementById("startBtn").addEventListener("click", init);
 
 </body>
 </html>
-
