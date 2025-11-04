@@ -25,13 +25,14 @@
   #startBtn {display:block; margin:20px auto; padding:12px 30px; font-size:18px; background:#e50914; color:#fff; border:none; border-radius:5px; cursor:pointer;}
   #popup, #loading-screen {position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column;}
   .popup-content {background:#111; border:2px solid #e50914; padding:30px 50px; border-radius:10px; text-align:center; color:#fff; max-width:90%; width:450px;}
-  .popup-content h2 {font-size:32px; margin-bottom:20px;}
+  .popup-content h2 {font-size:28px; margin-bottom:15px;}
   #nextBtn {background:#e50914; color:#fff; border:none; padding:12px 40px; border-radius:5px; font-size:18px; cursor:pointer;}
   .loader {border:6px solid #f3f3f3; border-top:6px solid #e50914; border-radius:50%; width:70px; height:70px; animation:spin 1s linear infinite; margin-bottom:20px;}
   @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
   #countdown-bar {width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden;}
   #countdown-fill {width:0%; height:100%; background:#e50914; transition:width 1s linear;}
-  #label-container {font-size:20px; margin-top:10px; text-align:left;}
+  #countdown-text {margin-top:8px; font-size:16px; color:#aaa;}
+  #label-container {font-size:18px; margin-top:10px; text-align:left;}
   #webcam-container video, #webcam-container canvas {
     border:2px solid #e50914; 
     border-radius:10px;
@@ -90,14 +91,16 @@ function showPopupAnalysis(){
       <div id="webcam-container"></div>
       <div id="label-container"></div>
       <div id="countdown-bar"><div id="countdown-fill"></div></div>
+      <div id="countdown-text">30s remaining</div>
     </div>
   `;
   document.body.appendChild(popup);
   document.getElementById("webcam-container").appendChild(webcam.canvas);
 
-  let totalTime = 30; // ← المدة الجديدة 30 ثانية
+  let totalTime = 30; // المدة 30 ثانية
   let seconds = totalTime;
   const countdownFill = document.getElementById("countdown-fill");
+  const countdownText = document.getElementById("countdown-text");
   const labelContainer = document.getElementById("label-container");
 
   const interval = setInterval(async () => {
@@ -110,6 +113,7 @@ function showPopupAnalysis(){
     });
 
     countdownFill.style.width = `${((totalTime - seconds) / totalTime) * 100}%`;
+    countdownText.textContent = `${seconds}s remaining`;
 
     seconds--;
     if(seconds < 0){
