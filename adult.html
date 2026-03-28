@@ -3,20 +3,51 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ageflix</title>
+<title>Ageflix - Adult Movies</title>
 
 <style>
 * { box-sizing: border-box; margin:0; padding:0; font-family: Arial; }
 body { background:#111; color:#fff; }
 
 /* Navbar */
-nav {
+.navbar {
   display:flex;
   justify-content:space-between;
-  padding:15px 20px;
-  background:#000;
+  align-items:center;
+  padding:10px 20px;
+  background:#111;
 }
-.logo { color:red; font-size:22px; font-weight:bold; }
+.logo { color:red; font-size:24px; font-weight:bold; }
+.navbar ul {
+  display:flex;
+  list-style:none;
+}
+.navbar ul li {
+  margin:0 15px;
+}
+.navbar ul li a {
+  color:#fff;
+  text-decoration:none;
+}
+
+/* Hero */
+.page-intro {
+  position:relative;
+  height:60vh;
+}
+.page-intro video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.page-intro-content {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+.page-intro h1 { color:red; font-size:40px; }
 
 /* Movies */
 .movies-container {
@@ -25,7 +56,6 @@ nav {
   gap:15px;
   padding:20px;
 }
-
 .movie-card {
   cursor:pointer;
   transition:0.3s;
@@ -89,52 +119,75 @@ nav {
 
 <body>
 
-<nav>
+<!-- Navbar -->
+<nav class="navbar">
   <div class="logo">Ageflix</div>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <img src="logo.png" style="width:50px;">
 </nav>
+
+<!-- Hero -->
+<section class="page-intro">
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4">
+  </video>
+  <div class="page-intro-content">
+    <h1>Adult Movies</h1>
+    <p>Enjoy the best movies experience</p>
+  </div>
+</section>
 
 <!-- Movies -->
 <section class="movies-container">
 
+  <!-- Inside Out -->
   <div class="movie-card"
     data-title="Inside Out"
-    data-summary="A girl’s emotions guide her through life changes."
+    data-summary="A girl’s emotions guide her life."
     data-actors="Amy Poehler"
     data-img="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg"
     data-trailer="https://www.youtube.com/embed/yRUAzGQ3nSY">
     <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg">
   </div>
 
+  <!-- WALL-E -->
   <div class="movie-card"
     data-title="WALL-E"
-    data-summary="A lonely robot finds love."
+    data-summary="Robot finds love."
     data-actors="Ben Burtt"
     data-img="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg"
     data-trailer="https://www.youtube.com/embed/alIq_wG9FNk">
     <img src="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg">
   </div>
 
+  <!-- Soul -->
   <div class="movie-card"
     data-title="Soul"
-    data-summary="A musician discovers life meaning."
+    data-summary="Musician finds meaning."
     data-actors="Jamie Foxx"
     data-img="https://upload.wikimedia.org/wikipedia/en/9/96/Soul_Poster.jpeg"
     data-trailer="https://www.youtube.com/embed/xOsLIiBStEs">
     <img src="https://upload.wikimedia.org/wikipedia/en/9/96/Soul_Poster.jpeg">
   </div>
 
+  <!-- Spider-Man -->
   <div class="movie-card"
     data-title="Spider-Man"
-    data-summary="A young hero saves the city."
+    data-summary="Hero saves the city."
     data-actors="Tom Holland"
     data-img="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg"
     data-trailer="https://www.youtube.com/embed/rk-dF1lIbIg">
     <img src="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg">
   </div>
 
+  <!-- Up -->
   <div class="movie-card"
     data-title="Up"
-    data-summary="An old man flies his house."
+    data-summary="Flying house adventure."
     data-actors="Ed Asner"
     data-img="https://upload.wikimedia.org/wikipedia/en/0/05/Up_%282009_film%29.jpg"
     data-trailer="https://www.youtube.com/embed/HWEW_qTLSEE">
