@@ -3,224 +3,240 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ageflix | Islamic History Collection</title>
+<title>Ageflix - Senior Movies</title>
+
 <style>
-    /* --- CSS Style --- */
-    :root {
-        --netflix-red: #e50914;
-        --bg-dark: #141414;
-        --card-bg: #181818;
-    }
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial; }
+body { background:#111; color:#fff; }
 
-    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; }
-    body { background-color: var(--bg-dark); color: #fff; overflow-x: hidden; }
+/* Navbar */
+.navbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 20px;
+  background:#111;
+}
+.logo { color:red; font-size:24px; font-weight:bold; }
+.navbar ul {
+  display:flex;
+  list-style:none;
+}
+.navbar ul li {
+  margin:0 15px;
+}
+.navbar ul li a {
+  color:#fff;
+  text-decoration:none;
+}
 
-    /* Navbar */
-    nav.navbar {
-        display: flex;
-        align-items: center;
-        padding: 20px 4%;
-        background: linear-gradient(to bottom, rgba(0,0,0,0.7) 10%, transparent);
-        position: fixed;
-        width: 100%;
-        top: 0;
-        z-index: 1000;
-    }
-    .logo { color: var(--netflix-red); font-size: 30px; font-weight: bold; text-decoration: none; letter-spacing: 1px; }
+/* Hero */
+.page-intro {
+  position:relative;
+  height:60vh;
+}
+.page-intro video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.page-intro-content {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+.page-intro h1 { color:red; font-size:40px; }
 
-    /* Hero Section */
-    .hero {
-        height: 70vh;
-        background: linear-gradient(to right, rgba(0,0,0,0.8), transparent), url('https://picsum.photos/1200/800?grayscale');
-        background-size: cover;
-        display: flex;
-        align-items: center;
-        padding: 0 4%;
-    }
-    .hero-content h1 { font-size: 3.5rem; margin-bottom: 1rem; }
-    .hero-content p { max-width: 600px; font-size: 1.2rem; color: #ccc; }
+/* Movies */
+.movies-container {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  padding:20px;
+}
+.movie-card {
+  cursor:pointer;
+  transition:0.3s;
+}
+.movie-card img {
+  width:100%;
+  height:300px;
+  object-fit:cover;
+  border-radius:10px;
+}
+.movie-card:hover { transform:scale(1.05); }
 
-    /* Movie Grid */
-    .section-title { padding: 20px 4% 0; font-size: 1.5rem; }
-    .movies-container {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-        gap: 10px;
-        padding: 20px 4%;
-    }
-    .movie-card {
-        position: relative;
-        cursor: pointer;
-        transition: transform 0.3s ease;
-        border-radius: 4px;
-        overflow: hidden;
-    }
-    .movie-card:hover { transform: scale(1.08); z-index: 2; }
-    .movie-card img { width: 100%; height: auto; display: block; }
+/* Popup */
+#movie-popup {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
 
-    /* Netflix Style Popup (Modal) */
-    #movie-popup {
-        position: fixed;
-        top: 0; left: 0;
-        width: 100%; height: 100%;
-        background: rgba(0,0,0,0.85);
-        display: none;
-        justify-content: center;
-        align-items: flex-start;
-        z-index: 2000;
-        overflow-y: auto;
-        padding-top: 50px;
-    }
-    .popup-content {
-        background: var(--card-bg);
-        width: 90%;
-        max-width: 850px;
-        border-radius: 8px;
-        position: relative;
-        box-shadow: 0 0 20px rgba(0,0,0,0.5);
-        animation: dropIn 0.4s ease-out;
-    }
-    @keyframes dropIn { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+.popup-content {
+  background:#111;
+  border:2px solid red;
+  border-radius:15px;
+  padding:20px;
+  width:90%;
+  max-width:600px;
+  text-align:center;
+  position:relative;
+}
 
-    .close-btn {
-        position: absolute;
-        top: 20px; right: 20px;
-        background: #000; color: #fff;
-        border: none; width: 35px; height: 35px;
-        border-radius: 50%; cursor: pointer; z-index: 10; font-size: 20px;
-    }
+.popup-content img {
+  width:100%;
+  height:250px;
+  object-fit:cover;
+  border-radius:10px;
+}
 
-    .video-header { position: relative; width: 100%; padding-top: 56.25%; background: #000; }
-    #popup-trailer { position: absolute; top: 0; left: 0; width: 100%; height: 100%; border: none; }
+#popup-trailer {
+  width:100%;
+  height:280px;
+  margin-top:15px;
+}
 
-    .popup-details-container {
-        display: flex;
-        padding: 30px;
-        gap: 20px;
-    }
-    .popup-poster-mini { width: 150px; border-radius: 4px; flex-shrink: 0; }
-    .info-text { flex-grow: 1; }
-    .info-text h2 { margin-bottom: 15px; font-size: 2rem; color: #fff; }
-    .info-text p { color: #d2d2d2; line-height: 1.6; margin-bottom: 10px; font-size: 1rem; }
-    .meta-data { font-size: 0.9rem; color: #777; margin-top: 15px; }
-    .meta-data span { color: #fff; }
-
-    @media (max-width: 600px) {
-        .popup-details-container { flex-direction: column; align-items: center; text-align: center; }
-        .hero-content h1 { font-size: 2rem; }
-    }
+.close-btn {
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:red;
+  color:#fff;
+  border:none;
+  padding:5px 10px;
+  cursor:pointer;
+}
 </style>
+
 </head>
+
 <body>
 
+<!-- Navbar -->
 <nav class="navbar">
-    <a href="#" class="logo">AGEFLIX</a>
+  <div class="logo">Ageflix</div>
+  <ul>
+    <li><a href="#">Home</a></li>
+    <li><a href="#">About</a></li>
+    <li><a href="#">Contact</a></li>
+  </ul>
+  <img src="logo.png" style="width:50px;">
 </nav>
 
-<header class="hero">
-    <div class="hero-content">
-        <h1>Islamic History</h1>
-        <p>Explore the greatest stories from Islamic heritage through high-quality animation and historical epics.</p>
-    </div>
-</header>
-
-<h2 class="section-title">Must Watch</h2>
-<section class="movies-container">
-    <div class="movie-card" 
-         data-title="Muhammad: The Last Prophet" 
-         data-summary="An epic animated feature following the early days of Islam and the life of the Prophet Muhammad, depicting the trials and triumphs of the early Muslims."
-         data-cast="Nicholas Kadi, Richard Epcar"
-         data-img="https://picsum.photos/400/600?random=11"
-         data-trailer="https://www.youtube.com/embed/v_799X0YxNo">
-        <img src="https://picsum.photos/400/600?random=11" alt="The Last Prophet">
-    </div>
-
-    <div class="movie-card" 
-         data-title="Journey to Mecca" 
-         data-summary="Follow the legendary traveler Ibn Battuta on his perilous journey from Tangier to Mecca for his first Hajj pilgrimage in 1325."
-         data-cast="Chems-Eddine Zinoune, Ben Kingsley"
-         data-img="https://picsum.photos/400/600?random=22"
-         data-trailer="https://www.youtube.com/embed/p6v6D_Y9pS8">
-        <img src="https://picsum.photos/400/600?random=22" alt="Journey to Mecca">
-    </div>
-
-    <div class="movie-card" 
-         data-title="Bilal: A New Breed of Hero" 
-         data-summary="A thousand years ago, one boy with a dream of becoming a great warrior is abducted with his sister and thrown into a world of greed and injustice."
-         data-cast="Adewale Akinnuoye-Agbaje, Ian McShane"
-         data-img="https://picsum.photos/400/600?random=33"
-         data-trailer="https://www.youtube.com/embed/XmE9pG99v7Q">
-        <img src="https://picsum.photos/400/600?random=33" alt="Bilal">
-    </div>
-
-    <div class="movie-card" 
-         data-title="The Boy and the King" 
-         data-summary="A touching story of a young boy who chooses his faith over everything, inspired by the historical Quranic story of 'People of the Ditch'."
-         data-cast="Animated Educational Feature"
-         data-img="https://picsum.photos/400/600?random=44"
-         data-trailer="https://www.youtube.com/embed/V6XN9qB_f4o">
-        <img src="https://picsum.photos/400/600?random=44" alt="The Boy and the King">
-    </div>
+<!-- Hero -->
+<section class="page-intro">
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4">
+  </video>
+  <div class="page-intro-content">
+    <h1>Senior Movies</h1>
+    <p>Enjoy the best movies experience</p>
+  </div>
 </section>
 
+<!-- Movies -->
+<section class="movies-container">
+
+  <!-- Muhammad: The Last Prophet -->
+  <div class="movie-card"
+    data-title="Muhammad: The Last Prophet"
+    data-summary="Animated movie depicting the life of Prophet Muhammad (PBUH)."
+    data-actors="Various voice actors"
+    data-img="https://upload.wikimedia.org/wikipedia/en/0/05/Muhammad_The_Last_Prophet_%28film%29_poster.jpg"
+    data-trailer="https://www.youtube.com/embed/1CmNlZXo0fI">
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/05/Muhammad_The_Last_Prophet_%28film%29_poster.jpg">
+  </div>
+
+  <!-- Journey to Mecca -->
+  <div class="movie-card"
+    data-title="Journey to Mecca"
+    data-summary="The inspiring story of Ibn Battuta's pilgrimage to Mecca."
+    data-actors="Narrated by Ben Kingsley"
+    data-img="https://upload.wikimedia.org/wikipedia/en/4/4c/Journey_to_Mecca_poster.jpg"
+    data-trailer="https://www.youtube.com/embed/3P6NY2wqzD0">
+    <img src="https://upload.wikimedia.org/wikipedia/en/4/4c/Journey_to_Mecca_poster.jpg">
+  </div>
+
+  <!-- Bilal: A New Breed of Hero -->
+  <div class="movie-card"
+    data-title="Bilal: A New Breed of Hero"
+    data-summary="Animated story about Bilal Ibn Rabah, a hero of early Islamic history."
+    data-actors="Khalid Abdalla"
+    data-img="https://upload.wikimedia.org/wikipedia/en/8/8e/Bilal_A_New_Breed_of_Hero.jpg"
+    data-trailer="https://www.youtube.com/embed/FWjKFS2-c4Y">
+    <img src="https://upload.wikimedia.org/wikipedia/en/8/8e/Bilal_A_New_Breed_of_Hero.jpg">
+  </div>
+
+  <!-- The Boy and the King -->
+  <div class="movie-card"
+    data-title="The Boy and the King"
+    data-summary="An animated story exploring faith, courage, and wisdom."
+    data-actors="Voice cast unknown"
+    data-img="https://m.media-amazon.com/images/M/MV5BMTYxMDg5NDc0Ml5BMl5BanBnXkFtZTgwODU1MzE4NDE@._V1_.jpg"
+    data-trailer="https://www.youtube.com/embed/TZQZ-J4fl1s">
+    <img src="https://m.media-amazon.com/images/M/MV5BMTYxMDg5NDc0Ml5BMl5BanBnXkFtZTgwODU1MzE4NDE@._V1_.jpg">
+  </div>
+
+</section>
+
+<!-- Popup -->
 <div id="movie-popup">
-    <div class="popup-content">
-        <button class="close-btn">&times;</button>
-        <div class="video-header">
-            <iframe id="popup-trailer" src="" allow="autoplay; fullscreen"></iframe>
-        </div>
-        <div class="popup-details-container">
-            <img src="" id="popup-poster" class="popup-poster-mini" alt="Poster">
-            <div class="info-text">
-                <h2 id="popup-title"></h2>
-                <p id="popup-summary"></p>
-                <div class="meta-data">
-                    <p>Cast: <span id="popup-cast"></span></p>
-                    <p>Genre: <span>History, Animation, Drama</span></p>
-                </div>
-            </div>
-        </div>
-    </div>
+  <div class="popup-content">
+
+    <button class="close-btn">X</button>
+
+    <img id="popup-img">
+    <h2 id="popup-title"></h2>
+    <p id="popup-summary"></p>
+    <p id="popup-actors"></p>
+
+    <iframe id="popup-trailer" allowfullscreen></iframe>
+
+  </div>
 </div>
 
 <script>
-    const movieCards = document.querySelectorAll('.movie-card');
-    const popup = document.getElementById('movie-popup');
-    const popupTitle = document.getElementById('popup-title');
-    const popupSummary = document.getElementById('popup-summary');
-    const popupCast = document.getElementById('popup-cast');
-    const popupPoster = document.getElementById('popup-poster');
-    const popupTrailer = document.getElementById('popup-trailer');
-    const closeBtn = document.querySelector('.close-btn');
+const cards = document.querySelectorAll('.movie-card');
+const popup = document.getElementById('movie-popup');
 
-    movieCards.forEach(card => {
-        card.addEventListener('click', () => {
-            // Fill Data
-            popupTitle.textContent = card.dataset.title;
-            popupSummary.textContent = card.dataset.summary;
-            popupCast.textContent = card.dataset.cast;
-            popupPoster.src = card.dataset.img;
-            
-            // Set Video with Autoplay
-            const videoId = card.dataset.trailer;
-            popupTrailer.src = videoId + "?autoplay=1&rel=0";
+const img = document.getElementById('popup-img');
+const title = document.getElementById('popup-title');
+const summary = document.getElementById('popup-summary');
+const actors = document.getElementById('popup-actors');
+const trailer = document.getElementById('popup-trailer');
 
-            // Show Popup
-            popup.style.display = "flex";
-            document.body.style.overflow = "hidden";
-        });
-    });
+const closeBtn = document.querySelector('.close-btn');
 
-    closeBtn.addEventListener('click', () => {
-        popup.style.display = "none";
-        popupTrailer.src = ""; // Stop video
-        document.body.style.overflow = "auto";
-    });
+cards.forEach(card => {
+  card.onclick = () => {
+    img.src = card.dataset.img;
+    title.innerText = card.dataset.title;
+    summary.innerText = card.dataset.summary;
+    actors.innerText = "Actors: " + card.dataset.actors;
+    trailer.src = card.dataset.trailer + "?autoplay=1";
 
-    // Close on outside click
-    window.addEventListener('click', (e) => {
-        if (e.target == popup) closeBtn.click();
-    });
+    popup.style.display = "flex";
+  }
+});
+
+closeBtn.onclick = () => {
+  popup.style.display = "none";
+  trailer.src = "";
+};
+
+popup.onclick = (e) => {
+  if(e.target === popup){
+    popup.style.display = "none";
+    trailer.src = "";
+  }
+};
 </script>
 
 </body>
