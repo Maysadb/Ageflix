@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ageflix - Movies</title>
+
+<style>
+* { box-sizing: border-box; margin:0; padding:0; font-family: Arial; }
+body { background:#111; color:#fff; }
+
+/* Navbar */
+.navbar {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px 20px;
+  background:#111;
+}
+.logo { color:red; font-size:24px; font-weight:bold; }
+
+/* Hero */
+.page-intro {
+  position:relative;
+  height:60vh;
+}
+.page-intro video {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+.page-intro-content {
+  position:absolute;
+  top:50%;
+  left:50%;
+  transform:translate(-50%,-50%);
+  text-align:center;
+}
+.page-intro h1 { color:red; font-size:40px; }
+
+/* Movies */
+.movies-container {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
+  gap:15px;
+  padding:20px;
+}
+
+.movie-card {
+  cursor:pointer;
+  transition:0.3s;
+  background:#000;
+  border-radius:10px;
+  overflow:hidden;
+}
+
+.movie-card img {
+  width:100%;
+  height:300px;
+  object-fit:contain; /* ✅ الصورة كاملة */
+  background:#000;
+}
+
+.movie-card:hover { transform:scale(1.05); }
+
+/* Popup */
+#movie-popup {
+  position:fixed;
+  top:0; left:0;
+  width:100%; height:100%;
+  background:rgba(0,0,0,0.9);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-content {
+  background:#111;
+  border:2px solid red;
+  border-radius:15px;
+  padding:20px;
+  width:90%;
+  max-width:600px;
+  text-align:center;
+  position:relative;
+}
+
+.popup-content img {
+  width:100%;
+  height:250px;
+  object-fit:contain; /* ✅ نفس الشي بالبوكب */
+  background:#000;
+  border-radius:10px;
+}
+
+#popup-trailer {
+  width:100%;
+  height:280px;
+  margin-top:15px;
+}
+
+.close-btn {
+  position:absolute;
+  top:10px;
+  right:10px;
+  background:red;
+  color:#fff;
+  border:none;
+  padding:5px 10px;
+  cursor:pointer;
+}
+</style>
+
+</head>
+
+<body>
+
+<!-- Navbar -->
+<nav class="navbar">
+  <div class="logo">Ageflix</div>
+  <img src="logo.png" style="width:50px;">
+</nav>
+
+<!-- Hero -->
+<section class="page-intro">
+  <video autoplay muted loop>
+    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4">
+  </video>
+  <div class="page-intro-content">
+    <h1>Movies</h1>
+    <p>Enjoy the best movies experience</p>
+  </div>
+</section>
+
+<!-- Movies -->
+<section class="movies-container">
+
+  <div class="movie-card"
+    data-title="Inside Out"
+    data-summary="A girl’s emotions guide her life."
+    data-actors="Amy Poehler"
+    data-img="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg"
+    data-trailer="https://www.youtube.com/embed/yRUAzGQ3nSY">
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg">
+  </div>
+
+  <div class="movie-card"
+    data-title="WALL-E"
+    data-summary="Robot finds love."
+    data-actors="Ben Burtt"
+    data-img="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg"
+    data-trailer="https://www.youtube.com/embed/alIq_wG9FNk">
+    <img src="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg">
+  </div>
+
+  <div class="movie-card"
+    data-title="Soul"
+    data-summary="Musician finds meaning."
+    data-actors="Jamie Foxx"
+    data-img="https://upload.wikimedia.org/wikipedia/en/9/90/Soul_%282020_film%29_poster.jpg"
+    data-trailer="https://www.youtube.com/embed/xOsLIiBStEs">
+    <img src="https://upload.wikimedia.org/wikipedia/en/9/90/Soul_%282020_film%29_poster.jpg">
+  </div>
+
+  <div class="movie-card"
+    data-title="Spider-Man"
+    data-summary="Hero saves the city."
+    data-actors="Tom Holland"
+    data-img="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg"
+    data-trailer="https://www.youtube.com/embed/rk-dF1lIbIg">
+    <img src="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg">
+  </div>
+
+  <div class="movie-card"
+    data-title="Up"
+    data-summary="Flying house adventure."
+    data-actors="Ed Asner"
+    data-img="https://upload.wikimedia.org/wikipedia/en/0/05/Up_%282009_film%29.jpg"
+    data-trailer="https://www.youtube.com/embed/HWEW_qTLSEE">
+    <img src="https://upload.wikimedia.org/wikipedia/en/0/05/Up_%282009_film%29.jpg">
+  </div>
+
+</section>
+
+<!-- Popup -->
+<div id="movie-popup">
+  <div class="popup-content">
+
+    <button class="close-btn">X</button>
+
+    <img id="popup-img">
+    <h2 id="popup-title"></h2>
+    <p id="popup-summary"></p>
+    <p id="popup-actors"></p>
+
+    <iframe id="popup-trailer" allowfullscreen></iframe>
+
+  </div>
+</div>
+
+<script>
+const cards = document.querySelectorAll('.movie-card');
+const popup = document.getElementById('movie-popup');
+
+const img = document.getElementById('popup-img');
+const title = document.getElementById('popup-title');
+const summary = document.getElementById('popup-summary');
+const actors = document.getElementById('popup-actors');
+const trailer = document.getElementById('popup-trailer');
+
+const closeBtn = document.querySelector('.close-btn');
+
+cards.forEach(card => {
+  card.onclick = () => {
+    img.src = card.dataset.img;
+    title.innerText = card.dataset.title;
+    summary.innerText = card.dataset.summary;
+    actors.innerText = "Actors: " + card.dataset.actors;
+    trailer.src = card.dataset.trailer + "?autoplay=1";
+
+    popup.style.display = "flex";
+  }
+});
+
+closeBtn.onclick = () => {
+  popup.style.display = "none";
+  trailer.src = "";
+};
+
+popup.onclick = (e) => {
+  if(e.target === popup){
+    popup.style.display = "none";
+    trailer.src = "";
+  }
+};
+</script>
+
+</body>
+</html>
