@@ -23,12 +23,12 @@
 
   /* Carousel */
   .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 40px 0; perspective: 1000px; }
-  .carousel-track { display: flex; gap: 30px; transition: transform 0.3s; }
-  .carousel-card { min-width: 220px; max-width: 220px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
-  .carousel-card img { width: 100%; height: 320px; object-fit: cover; transition: transform 0.3s; }
+  .carousel-track { display: flex; gap: 40px; transition: transform 0.3s; }
+  .carousel-card { min-width: 240px; max-width: 240px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+  .carousel-card img { width: 100%; height: 360px; object-fit: cover; transition: transform 0.3s; }
 
-  @media(max-width:1024px){ .carousel-card { min-width: 200px; max-width: 200px; } .carousel-card img { height: 280px; } }
-  @media(max-width:768px){ .carousel-card { min-width: 160px; max-width: 160px; } .carousel-card img { height: 220px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
+  @media(max-width:1200px){ .carousel-card { min-width: 200px; max-width: 200px; } .carousel-card img { height: 320px; } }
+  @media(max-width:768px){ .carousel-card { min-width: 160px; max-width: 160px; } .carousel-card img { height: 240px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
 </style>
 </head>
 <body>
@@ -65,7 +65,7 @@ const track = document.getElementById('carouselTrack');
 const container = document.getElementById('carouselContainer');
 const cards = Array.from(track.children);
 
-let speed = 0.05; // حركة بطيئة جدًا
+let speed = 0.03; // حركة بطيئة جدًا
 let offset = 0;
 
 // نسخ العناصر لتكرار سلس
@@ -84,7 +84,7 @@ function animateCarousel(){
   allCards.forEach(card=>{
     const cardCenter = card.offsetLeft + card.offsetWidth/2 - offset;
     const distance = Math.abs(center - cardCenter);
-    const scale = Math.max(0.7, 1 - distance/800);
+    const scale = Math.max(0.7, 1 - distance/1000); // تعديل للحصول على تأثير أوسع
     card.style.transform = `scale(${scale})`;
     card.style.zIndex = Math.floor(scale*100);
   });
@@ -94,7 +94,7 @@ function animateCarousel(){
 
 // توقف عند hover
 container.addEventListener('mouseenter', ()=> speed=0);
-container.addEventListener('mouseleave', ()=> speed=0.05);
+container.addEventListener('mouseleave', ()=> speed=0.03);
 
 animateCarousel();
 </script>
