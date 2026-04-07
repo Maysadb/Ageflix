@@ -7,37 +7,30 @@
 <style>
   * { box-sizing: border-box; margin:0; padding:0; font-family: Arial, sans-serif; }
   body { background: #111; color: #fff; overflow-x: hidden; }
-  
+
   /* Navbar */
   nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
   .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: #9C0F2E; }
   .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
   .navbar ul li { margin: 0 15px; }
   .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
-  .navbar .icon { flex: 1; text-align: right; }
 
   /* About Section */
   section.about { padding: 40px 20px; text-align: center; }
   section.about h1 { font-size: 32px; margin-bottom: 20px; color: #9C0F2E; }
   section.about p { font-size: 18px; max-width: 800px; margin: 0 auto 30px; line-height: 1.6; }
+  h2 { color: #9C0F2E; margin-bottom:20px; }
 
-  /* Team Carousel */
-  .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 20px 0; }
-  .carousel-track { display: flex; gap: 20px; transition: transform 0.5s ease-in-out; }
-  .carousel-card { min-width: 200px; border-radius: 10px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, opacity 1s; opacity: 0; }
-  .carousel-card.visible { opacity: 1; }
-  .carousel-card img { width: 100%; height: 250px; object-fit: cover; transition: transform 0.3s; }
-  .carousel-card:hover img { transform: scale(1.1); }
+  /* Carousel */
+  .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 40px 0; perspective: 1000px; }
+  .carousel-track { display: flex; gap: 20px; transition: transform 0.3s; }
+  .carousel-card { min-width: 200px; max-width: 200px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
+  .carousel-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.3s; }
   .carousel-card .overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(0,0,0,0.7); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 10px; overflow: hidden; transition: height 0.3s; }
   .carousel-card:hover .overlay { height: 100%; }
 
-  h2 { color: #9C0F2E; margin-bottom:20px; }
-
-  @media(max-width:768px){
-    section.about h1 { font-size: 24px; }
-    section.about p { font-size: 16px; }
-    .carousel-card img { height: 180px; }
-  }
+  @media(max-width:1024px){ .carousel-card { min-width: 180px; max-width: 180px; } .carousel-card img { height: 240px; } }
+  @media(max-width:768px){ .carousel-card { min-width: 150px; max-width: 150px; } .carousel-card img { height: 200px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
 </style>
 </head>
 <body>
@@ -54,73 +47,57 @@
 <section class="about">
   <h1>About Ageflix Project</h1>
   <p>
-    We are Grade 6A students—Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed—working together to develop AGEFLIX.
-
-The idea was initiated by Ms. Angie Jamal, inspired by Netflix-style recommendations and the concerns of parents about age-appropriate content. The project was developed under her supervision and guidance.
-
-Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance, with each member contributing to building and presenting the project.
+    We are Grade 6A students—Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed—developing AGEFLIX inspired by Netflix-style recommendations.
   </p>
-
   <h2>Meet the Team</h2>
-  <div class="carousel-container">
+
+  <div class="carousel-container" id="carouselContainer">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-card">
-        <img src="https://picsum.photos/400/300?random=11" alt="Student 1">
-        <div class="overlay">
-          <h3>Student 1</h3>
-          <p>Front-end Developer</p>
-        </div>
-      </div>
-      <div class="carousel-card">
-        <img src="https://picsum.photos/400/300?random=12" alt="Student 2">
-        <div class="overlay">
-          <h3>Student 2</h3>
-          <p>Back-end Developer</p>
-        </div>
-      </div>
-      <div class="carousel-card">
-        <img src="https://picsum.photos/400/300?random=13" alt="Student 3">
-        <div class="overlay">
-          <h3>Student 3</h3>
-          <p>UI/UX Designer</p>
-        </div>
-      </div>
-      <div class="carousel-card">
-        <img src="https://picsum.photos/400/300?random=14" alt="Maysa">
-        <div class="overlay">
-          <h3>Maysa</h3>
-          <p>Project Lead</p>
-        </div>
-      </div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=11"><div class="overlay"><h3>Student 1</h3><p>Front-end Developer</p></div></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=12"><div class="overlay"><h3>Student 2</h3><p>Back-end Developer</p></div></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=13"><div class="overlay"><h3>Student 3</h3><p>UI/UX Designer</p></div></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=14"><div class="overlay"><h3>Maysa</h3><p>Project Lead</p></div></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=15"><div class="overlay"><h3>Student 5</h3><p>Tester</p></div></div>
     </div>
   </div>
 </section>
 
 <script>
-  const track = document.getElementById('carouselTrack');
-  let position = 0;
-  const cardWidth = 220; // تقريباً مع الفجوة
+const track = document.getElementById('carouselTrack');
+const container = document.getElementById('carouselContainer');
+const cards = Array.from(track.children);
 
-  function moveCarousel() {
-    position -= 1;
-    if(Math.abs(position) >= track.scrollWidth - track.parentElement.offsetWidth){
-      position = 0;
-    }
-    track.style.transform = `translateX(${position}px)`;
+let speed = 0.5;
+let offset = 0;
+
+// نسخ العناصر لتكرار سلس
+track.innerHTML += track.innerHTML;
+const allCards = Array.from(track.children);
+
+function animateCarousel(){
+  offset -= speed;
+  if(Math.abs(offset) >= track.scrollWidth/2){
+    offset = 0;
   }
+  track.style.transform = `translateX(${offset}px)`;
 
-  let interval = setInterval(moveCarousel, 30);
-
-  // توقف عند Hover
-  const container = document.querySelector('.carousel-container');
-  container.addEventListener('mouseenter', ()=> clearInterval(interval));
-  container.addEventListener('mouseleave', ()=> interval = setInterval(moveCarousel,30));
-
-  // Fade in عند تحميل الصفحة
-  const cards = document.querySelectorAll('.carousel-card');
-  cards.forEach((card, index)=>{
-    setTimeout(()=>{ card.classList.add('visible'); }, index * 200); // تأخير 200ms بين كل صورة
+  // تحديث حجم الصور الوسطى
+  const center = container.offsetWidth/2;
+  allCards.forEach(card=>{
+    const cardCenter = card.offsetLeft + card.offsetWidth/2 - offset;
+    const distance = Math.abs(center - cardCenter);
+    const scale = Math.max(0.7, 1 - distance/800);
+    card.style.transform = `scale(${scale})`;
+    card.style.zIndex = Math.floor(scale*100);
   });
+
+  requestAnimationFrame(animateCarousel);
+}
+
+container.addEventListener('mouseenter', ()=> speed=0);
+container.addEventListener('mouseleave', ()=> speed=0.5);
+
+animateCarousel();
 </script>
 
 </body>
