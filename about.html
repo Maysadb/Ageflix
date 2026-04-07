@@ -24,14 +24,18 @@
   /* Carousel */
   .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 40px 0; }
   .carousel-track { display: flex; gap: 30px; transition: transform 0.3s; }
-  .carousel-card { min-width: 300px; max-width: 300px; height: 300px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
-  .carousel-card img { width: 100%; height: 100%; object-fit: cover; }
+  .carousel-card { min-width: 400px; max-width: 400px; height: 400px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; box-shadow: 0 8px 25px rgba(0,0,0,0.6); transition: transform 0.3s; }
+  .carousel-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
+  .carousel-card:hover { transform: scale(1.05); }
 
-  /* Navigation Arrows */
+  /* Navigation Arrows Below */
+  .carousel-arrows {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    gap: 20px;
+  }
   .carousel-arrow {
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
     width: 35px;
     height: 35px;
     background: rgba(156,15,46,0.7);
@@ -42,13 +46,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    z-index: 1000;
     transition: transform 0.3s, background 0.3s;
     user-select: none;
   }
-  .carousel-arrow:hover { transform: translateY(-50%) scale(1.2); background: rgba(156,15,46,1); }
-  .carousel-arrow.left { left: 10px; }
-  .carousel-arrow.right { right: 10px; }
+  .carousel-arrow:hover { background: rgba(156,15,46,1); transform: scale(1.2); }
 
   /* Popup Zoom */
   #popupZoom {
@@ -83,7 +84,8 @@
   }
   #popupZoom .closeBtn:hover { background: rgba(156,15,46,1); transform: scale(1.2); }
 
-  @media(max-width:1200px){ .carousel-card { min-width: 250px; max-width: 250px; height: 250px; } }
+  @media(max-width:1600px){ .carousel-card { min-width: 350px; max-width: 350px; height: 350px; } }
+  @media(max-width:1200px){ .carousel-card { min-width: 300px; max-width: 300px; height: 300px; } }
   @media(max-width:768px){ .carousel-card { min-width: 200px; max-width: 200px; height: 200px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
 </style>
 </head>
@@ -99,30 +101,26 @@
 </nav>
 
 <section class="about">
-  <h1>  About the Team</h1>
+  <h1>About Ageflix Project</h1>
   <p>
- 
-
-We are Grade 6A students—Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed—working together to develop AGEFLIX.
-
-The idea was initiated by Ms. Angie Jamal, inspired by Netflix-style recommendations and the concerns of parents about age-appropriate content. The project was developed under her supervision and guidance.
-
-Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance, with each member contributing to building and presenting the project.
+    We are Grade 6A students—Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed—developing AGEFLIX inspired by Netflix-style recommendations.
   </p>
   <h2>Meet the Team</h2>
 
   <div class="carousel-container" id="carouselContainer">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-card"><img src="https://picsum.photos/300/300?random=11"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/300/300?random=12"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/300/300?random=13"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/300/300?random=14"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/300/300?random=15"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/400?random=11"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/400?random=12"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/400?random=13"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/400?random=14"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/400?random=15"></div>
     </div>
 
-    <!-- الأسهم -->
-    <div class="carousel-arrow left" id="arrowLeft">&#10094;</div>
-    <div class="carousel-arrow right" id="arrowRight">&#10095;</div>
+    <!-- الأسهم أسفل الكاروسيل -->
+    <div class="carousel-arrows">
+      <div class="carousel-arrow" id="arrowLeft">&#10094;</div>
+      <div class="carousel-arrow" id="arrowRight">&#10095;</div>
+    </div>
   </div>
 </section>
 
@@ -156,8 +154,8 @@ container.addEventListener('mouseenter', ()=> speed=0);
 container.addEventListener('mouseleave', ()=> speed=0.08);
 
 // أسهم التنقل
-document.getElementById('arrowLeft').addEventListener('click', ()=> offset += 310);
-document.getElementById('arrowRight').addEventListener('click', ()=> offset -= 310);
+document.getElementById('arrowLeft').addEventListener('click', ()=> offset += 410);
+document.getElementById('arrowRight').addEventListener('click', ()=> offset -= 410);
 
 // Zoom عند الضغط على الصورة
 const popup = document.getElementById('popupZoom');
