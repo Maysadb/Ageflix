@@ -3,236 +3,262 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Ageflix - Movies</title>
-
+<title>Ageflix - Home</title>
 <style>
-* { box-sizing: border-box; margin:0; padding:0; font-family: Arial; }
-body { background:#111; color:#fff; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family:Arial, sans-serif; }
+  body { background:#000; color:#fff; }
 
-/* Navbar */
-.navbar {
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  padding:10px 20px;
-  background:#111;
-}
-.logo { color:#9C0F2E; font-size:24px; font-weight:bold; }
+  /* Navbar */
+  .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#111; }
+  .logo { color:#9C0F2E; font-size:28px; font-weight:bold; }
+  .navbar ul { display:flex; list-style:none; }
+  .navbar ul li { margin:0 15px; }
+  .navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; }
 
-/* Hero */
-.page-intro {
-  position:relative;
-  height:60vh;
-}
-.page-intro video {
-  width:100%;
-  height:100%;
-  object-fit:cover;
-}
-.page-intro-content {
-  position:absolute;
-  top:50%;
-  left:50%;
-  transform:translate(-50%,-50%);
-  text-align:center;
-}
-.page-intro h1 { color:#9C0F2E; font-size:40px; }
+  /* Slider */
+  .slider {
+    position: relative;
+    overflow: hidden;
+    max-width: 90%;
+    margin: 30px auto;
+    height: 500px; /* طول البنر مناسب */
+    border: 4px solid #9C0F2E; /* الإطار باللون المطلوب */
+    border-radius: 12px;
+    background:#000;
+  }
+  .slide { position:absolute; width:100%; height:100%; opacity:0; transition:opacity 1s ease-in-out; }
+  .slide.active { opacity:1; z-index:2; }
+  .slide img {
+    width:100%;
+    height:100%;
+    object-fit: contain; /* الصورة تظهر كاملة داخل الإطار */
+  }
 
-/* Movies */
-.movies-container {
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:15px;
-  padding:20px;
-}
+  /* الأسهم */
+  .prev, .next {
+    position:absolute;
+    top: auto;
+    bottom: 20px;
+    transform: translateY(0);
+    background: rgba(0,0,0,0.5);
+    color:#9C0F2E;
+    border:none;
+    padding:10px;
+    cursor:pointer;
+    font-size:20px;
+    border-radius:50%;
+    z-index:3;
+  }
+  .prev { left:45%; }
+  .next { right:45%; }
 
-.movie-card {
-  cursor:pointer;
-  transition:0.3s;
-  background:#000;
-  border-radius:10px;
-  overflow:hidden;
-}
+  /* النقاط */
+  .dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:3; }
+  .dot { width:12px; height:12px; border-radius:50%; background-color:rgba(255,255,255,0.5); cursor:pointer; }
+  .dot.active { background:#9C0F2E; }
 
-.movie-card img {
-  width:100%;
-  height:300px;
-  object-fit:contain;
-  background:#000;
-}
+  /* زر الكاميرا */
+  #startBtn { display:block; margin:20px auto; padding:12px 30px; font-size:18px; background:#9C0F2E; color:#fff; border:none; border-radius:5px; cursor:pointer; }
 
-.movie-card:hover { transform:scale(1.05); }
+  /* Popup */
+  #popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column; }
+  .popup-content { background:#111; border:2px solid #9C0F2E; padding:30px 50px; border-radius:10px; text-align:center; color:#fff; max-width:90%; width:450px; }
+  .popup-content h2 { font-size:28px; margin-bottom:15px; }
+  #nextBtn { background:#9C0F2E; color:#fff; border:none; padding:12px 40px; border-radius:5px; font-size:18px; cursor:pointer; }
+  .loader { border:6px solid #f3f3f3; border-top:6px solid #9C0F2E; border-radius:50%; width:70px; height:70px; animation:spin 1s linear infinite; margin-bottom:20px; }
+  @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
+  #countdown-bar { width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden; }
+  #countdown-fill { width:0%; height:100%; background:#9C0F2E; transition:width 1s linear; }
+  #countdown-text { margin-top:8px; font-size:16px; color:#aaa; }
+  #label-container { font-size:18px; margin-top:10px; text-align:left; }
+  #webcam-container video, #webcam-container canvas {
+    border:2px solid #9C0F2E;
+    border-radius:10px;
+    width: 100%;
+    max-width: 300px;
+    height: auto;
+  }
 
-/* Popup */
-#movie-popup {
-  position:fixed;
-  top:0; left:0;
-  width:100%; height:100%;
-  background:rgba(0,0,0,0.9);
-  display:none;
-  justify-content:center;
-  align-items:center;
-}
+  /* Footer */
+  footer {
+    background:#111;
+    color:#fff;
+    text-align:center;
+    padding:15px 0;
+    border-top:3px solid #9C0F2E;
+    font-size:14px;
+  }
+  footer a {
+    margin-left:8px;
+    color:#9C0F2E;
+    text-decoration:none;
+    vertical-align:middle;
+    transition: transform 0.2s;
+  }
+  footer a:hover { transform: scale(1.2); }
 
-.popup-content {
-  background:#111;
-  border:2px solid #9C0F2E; /* تم التعديل */
-  border-radius:15px;
-  padding:20px;
-  width:90%;
-  max-width:600px;
-  text-align:center;
-  position:relative;
-}
+  footer svg { vertical-align:middle; }
 
-.popup-content img {
-  width:100%;
-  height:250px;
-  object-fit:contain;
-  background:#000;
-  border-radius:10px;
-}
-
-#popup-trailer {
-  width:100%;
-  height:280px;
-  margin-top:15px;
-}
-
-.close-btn {
-  position:absolute;
-  top:10px;
-  right:10px;
-  background:#9C0F2E; /* تم التعديل */
-  color:#fff;
-  border:none;
-  padding:5px 10px;
-  cursor:pointer;
-}
+  /* Responsive */
+  @media(max-width:768px){
+    .slider { height:400px; }
+  }
+  @media(max-width:480px){
+    .slider { height:300px; }
+  }
 </style>
-
 </head>
-
 <body>
 
-<!-- Navbar -->
 <nav class="navbar">
   <div class="logo">Ageflix</div>
-  <img src="logo.png" style="width:50px;">
+  <ul>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+  </ul>
+  <img src="logo.png" alt="Logo" style="width: 50px; height: 50px;">
 </nav>
 
-<!-- Hero -->
-<section class="page-intro">
-  <video autoplay muted loop>
-    <source src="https://cdn.coverr.co/videos/coverr-cinema-room-4635/1080p.mp4">
-  </video>
-  <div class="page-intro-content">
-    <h1>Movies</h1>
-    <p>Enjoy the best movies experience</p>
-  </div>
-</section>
-
-<!-- Movies -->
-<section class="movies-container">
-
-  <div class="movie-card"
-    data-title="Inside Out"
-    data-summary="A girl’s emotions guide her life."
-    data-actors="Amy Poehler"
-    data-img="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg"
-    data-trailer="https://www.youtube.com/embed/yRUAzGQ3nSY">
-    <img src="https://upload.wikimedia.org/wikipedia/en/0/0a/Inside_Out_%282015_film%29_poster.jpg">
-  </div>
-
-  <div class="movie-card"
-    data-title="WALL-E"
-    data-summary="Robot finds love."
-    data-actors="Ben Burtt"
-    data-img="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg"
-    data-trailer="https://www.youtube.com/embed/alIq_wG9FNk">
-    <img src="https://upload.wikimedia.org/wikipedia/en/c/c2/WALL-Eposter.jpg">
-  </div>
-
-  <div class="movie-card"
-    data-title="Soul"
-    data-summary="Musician finds meaning."
-    data-actors="Jamie Foxx"
-    data-img="https://upload.wikimedia.org/wikipedia/en/9/90/Soul_%282020_film%29_poster.jpg"
-    data-trailer="https://www.youtube.com/embed/xOsLIiBStEs">
-    <img src="https://upload.wikimedia.org/wikipedia/en/9/90/Soul_%282020_film%29_poster.jpg">
-  </div>
-
-  <div class="movie-card"
-    data-title="Spider-Man"
-    data-summary="Hero saves the city."
-    data-actors="Tom Holland"
-    data-img="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg"
-    data-trailer="https://www.youtube.com/embed/rk-dF1lIbIg">
-    <img src="https://upload.wikimedia.org/wikipedia/en/f/f9/Spider-Man_Homecoming_poster.jpg">
-  </div>
-
-  <div class="movie-card"
-    data-title="Up"
-    data-summary="Flying house adventure."
-    data-actors="Ed Asner"
-    data-img="https://upload.wikimedia.org/wikipedia/en/0/05/Up_%282009_film%29.jpg"
-    data-trailer="https://www.youtube.com/embed/HWEW_qTLSEE">
-    <img src="https://upload.wikimedia.org/wikipedia/en/0/05/Up_%282009_film%29.jpg">
-  </div>
-
-</section>
-
-<!-- Popup -->
-<div id="movie-popup">
-  <div class="popup-content">
-
-    <button class="close-btn">X</button>
-
-    <img id="popup-img">
-    <h2 id="popup-title"></h2>
-    <p id="popup-summary"></p>
-    <p id="popup-actors"></p>
-
-    <iframe id="popup-trailer" allowfullscreen></iframe>
-
-  </div>
+<div class="slider">
+  <div class="slide active"><img src="1.jpeg" alt="Banner 1"></div>
+  <div class="slide"><img src="ba1.png" alt="Banner 2"></div>
+  <div class="slide"><img src="ba2.png" alt="Banner 3"></div>
+  <div class="slide"><img src="ba3.png" alt="Banner 4"></div>
+  <button class="prev">&#10094;</button>
+  <button class="next">&#10095;</button>
+  <div class="dots"></div>
 </div>
 
+<button id="startBtn">Start Camera & Detect Age</button>
+
+<!-- Footer -->
+<footer>
+  <span>برمجة الموقع من خلال <strong>Maysa Dbsawi</strong></span>
+  <a href="https://www.linkedin.com/in/your-linkedin-profile/" target="_blank">
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#9C0F2E" viewBox="0 0 24 24">
+      <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.762 2.24 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.76-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.25c-.966 0-1.75-.783-1.75-1.75s.784-1.75 1.75-1.75 1.75.783 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.25h-3v-5.5c0-1.379-1.121-2.5-2.5-2.5s-2.5 1.121-2.5 2.5v5.5h-3v-10h3v1.354c.794-1.155 2.211-1.354 3.5-1.354 2.481 0 4.5 2.019 4.5 4.5v5.5z"/>
+    </svg>
+  </a>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 <script>
-const cards = document.querySelectorAll('.movie-card');
-const popup = document.getElementById('movie-popup');
+const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
+let model, webcam, maxPredictions;
 
-const img = document.getElementById('popup-img');
-const title = document.getElementById('popup-title');
-const summary = document.getElementById('popup-summary');
-const actors = document.getElementById('popup-actors');
-const trailer = document.getElementById('popup-trailer');
+async function init() {
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
+  model = await tmImage.load(modelURL, metadataURL);
+  maxPredictions = model.getTotalClasses();
 
-const closeBtn = document.querySelector('.close-btn');
+  webcam = new tmImage.Webcam(400, 300, true);
+  await webcam.setup();
+  await webcam.play();
 
-cards.forEach(card => {
-  card.onclick = () => {
-    img.src = card.dataset.img;
-    title.innerText = card.dataset.title;
-    summary.innerText = card.dataset.summary;
-    actors.innerText = "Actors: " + card.dataset.actors;
-    trailer.src = card.dataset.trailer + "?autoplay=1";
+  showPopupAnalysis();
+}
 
-    popup.style.display = "flex";
-  }
+function showPopupAnalysis(){
+  const popup = document.createElement("div");
+  popup.id = "popup";
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h2>Analyzing your face...</h2>
+      <div id="webcam-container"></div>
+      <div id="label-container"></div>
+      <div id="countdown-bar"><div id="countdown-fill"></div></div>
+      <div id="countdown-text">15s remaining</div>
+    </div>
+  `;
+  document.body.appendChild(popup);
+  document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+  let totalTime = 15;
+  let seconds = totalTime;
+  const countdownFill = document.getElementById("countdown-fill");
+  const countdownText = document.getElementById("countdown-text");
+  const labelContainer = document.getElementById("label-container");
+
+  const interval = setInterval(async () => {
+    await webcam.update();
+    const prediction = await model.predict(webcam.canvas);
+
+    labelContainer.innerHTML = "";
+    prediction.forEach(p => {
+      labelContainer.innerHTML += `<p>${p.className}: ${(p.probability*100).toFixed(1)}%</p>`;
+    });
+
+    countdownFill.style.width = `${((totalTime - seconds) / totalTime) * 100}%`;
+    countdownText.textContent = `${seconds}s remaining`;
+
+    seconds--;
+    if(seconds < 0){
+      clearInterval(interval);
+      showResult(prediction);
+    }
+  }, 1000);
+}
+
+function showResult(prediction){
+  const best = prediction.reduce((a,b)=>a.probability>b.probability?a:b);
+  const popup = document.getElementById("popup");
+  popup.innerHTML = `
+    <div class="popup-content">
+      <h2>Your age group is <span>${best.className}</span></h2>
+      <button id="nextBtn">Next ➜</button>
+    </div>
+  `;
+  document.getElementById("nextBtn").addEventListener("click", () => {
+    popup.innerHTML = `
+      <div class="popup-content">
+        <div class="loader"></div>
+        <p>Loading your suitable movies...</p>
+      </div>
+    `;
+    setTimeout(() => {
+      if(best.className.toLowerCase().includes("kid")) window.location.href = "kids.html";
+      else if(best.className.toLowerCase().includes("adult")) window.location.href = "adult.html";
+      else if(best.className.toLowerCase().includes("senior")) window.location.href = "senior.html";
+      else window.location.reload();
+    }, 3000);
+  });
+}
+
+// Slider logic
+const slides = document.querySelectorAll(".slide");
+const prevBtn = document.querySelector(".prev");
+const nextBtn = document.querySelector(".next");
+const dotsContainer = document.querySelector(".dots");
+let slideIndex = 0;
+
+function showSlide(index){
+  if(index < 0) slideIndex = slides.length - 1;
+  else if(index >= slides.length) slideIndex = 0;
+  else slideIndex = index;
+
+  slides.forEach((s,i) => {
+    s.classList.remove("active");
+    if(dotsContainer.children[i]) dotsContainer.children[i].classList.remove("active");
+  });
+  slides[slideIndex].classList.add("active");
+  if(dotsContainer.children[slideIndex]) dotsContainer.children[slideIndex].classList.add("active");
+}
+
+slides.forEach((_, i) => {
+  const dot = document.createElement("span");
+  dot.classList.add("dot");
+  if(i === 0) dot.classList.add("active");
+  dot.addEventListener("click", () => showSlide(i));
+  dotsContainer.appendChild(dot);
 });
 
-closeBtn.onclick = () => {
-  popup.style.display = "none";
-  trailer.src = "";
-};
+prevBtn.addEventListener("click", () => showSlide(slideIndex - 1));
+nextBtn.addEventListener("click", () => showSlide(slideIndex + 1));
+setInterval(() => showSlide(slideIndex + 1), 5000);
 
-popup.onclick = (e) => {
-  if(e.target === popup){
-    popup.style.display = "none";
-    trailer.src = "";
-  }
-};
+document.getElementById("startBtn").addEventListener("click", init);
 </script>
 
 </body>
