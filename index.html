@@ -21,8 +21,8 @@
     overflow: hidden;
     max-width: 90%;
     margin: 30px auto;
-    height: 600px;
-    border: 4px solid #9C0F2E;
+    height: 400px; /* أقل من السابق للإطار الأصغر */
+    border: 3px solid #9C0F2E; /* إطار أصغر */
     border-radius: 12px;
     background:#000;
   }
@@ -31,30 +31,29 @@
   .slide img {
     width:100%;
     height:100%;
-    object-fit: cover; /* الصورة تغطي كامل عرض الإطار */
+    object-fit: contain; /* الصورة تظهر كاملة داخل الإطار */
   }
 
   /* الأسهم */
   .prev, .next {
     position:absolute;
     top: auto;
-    bottom: 20px;
-    transform: translateY(0);
+    bottom: 10px;
     background: rgba(0,0,0,0.5);
     color:#9C0F2E;
     border:none;
-    padding:10px;
+    padding:8px;
     cursor:pointer;
-    font-size:20px;
+    font-size:18px;
     border-radius:50%;
     z-index:3;
   }
-  .prev { left:45%; }
-  .next { right:45%; }
+  .prev { left:40%; }
+  .next { right:40%; }
 
   /* النقاط */
-  .dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:3; }
-  .dot { width:12px; height:12px; border-radius:50%; background-color:rgba(255,255,255,0.5); cursor:pointer; }
+  .dots { position:absolute; bottom:5px; left:50%; transform:translateX(-50%); display:flex; gap:6px; z-index:3; }
+  .dot { width:10px; height:10px; border-radius:50%; background-color:rgba(255,255,255,0.5); cursor:pointer; }
   .dot.active { background:#9C0F2E; }
 
   /* زر الكاميرا */
@@ -62,20 +61,26 @@
 
   /* Popup */
   #popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column; }
-  .popup-content { background:#111; border:2px solid #9C0F2E; padding:30px 50px; border-radius:10px; text-align:center; color:#fff; max-width:90%; width:450px; }
-  .popup-content h2 { font-size:28px; margin-bottom:15px; }
-  #nextBtn { background:#9C0F2E; color:#fff; border:none; padding:12px 40px; border-radius:5px; font-size:18px; cursor:pointer; }
-  .loader { border:6px solid #f3f3f3; border-top:6px solid #9C0F2E; border-radius:50%; width:70px; height:70px; animation:spin 1s linear infinite; margin-bottom:20px; }
+  .popup-content { background:#111; border:2px solid #9C0F2E; padding:25px 40px; border-radius:10px; text-align:center; color:#fff; max-width:90%; width:400px; }
+  .popup-content h2 { font-size:24px; margin-bottom:15px; }
+  #nextBtn { background:#9C0F2E; color:#fff; border:none; padding:10px 35px; border-radius:5px; font-size:16px; cursor:pointer; }
+  .loader { border:6px solid #f3f3f3; border-top:6px solid #9C0F2E; border-radius:50%; width:60px; height:60px; animation:spin 1s linear infinite; margin-bottom:20px; }
   @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
   #countdown-bar { width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden; }
   #countdown-fill { width:0%; height:100%; background:#9C0F2E; transition:width 1s linear; }
   #countdown-text { margin-top:8px; font-size:16px; color:#aaa; }
-  #label-container { font-size:18px; margin-top:10px; text-align:left; }
-  #webcam-container video, #webcam-container canvas { border:2px solid #9C0F2E; border-radius:10px; width: 100%; max-width: 300px; height: auto; }
+  #label-container { font-size:16px; margin-top:10px; text-align:left; }
+  #webcam-container video, #webcam-container canvas {
+    border:2px solid #9C0F2E;
+    border-radius:10px;
+    width: 100%;
+    max-width: 250px;
+    height: auto;
+  }
 
   /* Responsive */
-  @media(max-width:768px){ .slider { height:450px; } }
-  @media(max-width:480px){ .slider { height:300px; } }
+  @media(max-width:768px){ .slider { height:300px; } }
+  @media(max-width:480px){ .slider { height:200px; } }
 </style>
 </head>
 <body>
@@ -91,8 +96,8 @@
 
 <div class="slider">
   <div class="slide active"><img src="ba1.png" alt="Banner 1"></div>
- <div class="slide active"><img src="ba2.png" alt="Banner 1"></div>
- <div class="slide active"><img src="ba3.png" alt="Banner 1"></div>
+  <div class="slide active"><img src="ba2.png" alt="Banner 1"></div>
+  <div class="slide active"><img src="ba3.png" alt="Banner 1"></div>
   <div class="slide"><img src="ba1.png" alt="Banner 2"></div>
   <div class="slide"><img src="ba2.png" alt="Banner 3"></div>
   <div class="slide"><img src="ba3.png" alt="Banner 4"></div>
@@ -106,6 +111,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 <script>
+// نفس السكربت كما في النسخة السابقة
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
 let model, webcam, maxPredictions;
 
