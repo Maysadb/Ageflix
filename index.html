@@ -21,8 +21,8 @@
     overflow: hidden;
     max-width: 90%;
     margin: 30px auto;
-    height: 600px; /* طول البنر */
-    border: 4px solid #9C0F2E; /* الإطار باللون المطلوب */
+    height: 600px;
+    border: 4px solid #9C0F2E;
     border-radius: 12px;
     background:#000;
   }
@@ -31,7 +31,7 @@
   .slide img {
     width:100%;
     height:100%;
-    object-fit: contain; /* الصورة تظهر كاملة داخل الإطار */
+    object-fit: cover; /* الصورة تغطي كامل عرض الإطار */
   }
 
   /* الأسهم */
@@ -71,21 +71,11 @@
   #countdown-fill { width:0%; height:100%; background:#9C0F2E; transition:width 1s linear; }
   #countdown-text { margin-top:8px; font-size:16px; color:#aaa; }
   #label-container { font-size:18px; margin-top:10px; text-align:left; }
-  #webcam-container video, #webcam-container canvas {
-    border:2px solid #9C0F2E;
-    border-radius:10px;
-    width: 100%;
-    max-width: 300px;
-    height: auto;
-  }
+  #webcam-container video, #webcam-container canvas { border:2px solid #9C0F2E; border-radius:10px; width: 100%; max-width: 300px; height: auto; }
 
   /* Responsive */
-  @media(max-width:768px){
-    .slider { height:400px; }
-  }
-  @media(max-width:480px){
-    .slider { height:300px; }
-  }
+  @media(max-width:768px){ .slider { height:450px; } }
+  @media(max-width:480px){ .slider { height:300px; } }
 </style>
 </head>
 <body>
