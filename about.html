@@ -10,7 +10,7 @@
   
   /* Navbar */
   nav.navbar { display: flex; align-items: center; justify-content: space-between; background-color: #111; color: #fff; padding: 10px 20px; flex-wrap: wrap; }
-  .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: red; }
+  .navbar .logo { font-size: 24px; font-weight: bold; flex: 1; color: #9C0F2E; }
   .navbar ul { display: flex; list-style: none; justify-content: center; flex:2; }
   .navbar ul li { margin: 0 15px; }
   .navbar ul li a { color:#fff; text-decoration: none; font-weight: bold; }
@@ -18,7 +18,7 @@
 
   /* About Section */
   section.about { padding: 40px 20px; text-align: center; }
-  section.about h1 { font-size: 32px; margin-bottom: 20px; color: #e50914; }
+  section.about h1 { font-size: 32px; margin-bottom: 20px; color: #9C0F2E; }
   section.about p { font-size: 18px; max-width: 800px; margin: 0 auto 30px; line-height: 1.6; }
 
   /* Team Carousel */
@@ -30,6 +30,8 @@
   .carousel-card:hover img { transform: scale(1.1); }
   .carousel-card .overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(0,0,0,0.7); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 10px; overflow: hidden; transition: height 0.3s; }
   .carousel-card:hover .overlay { height: 100%; }
+
+  h2 { color: #9C0F2E; margin-bottom:20px; }
 
   @media(max-width:768px){
     section.about h1 { font-size: 24px; }
@@ -44,21 +46,22 @@
   <div class="logo">Ageflix</div>
   <ul>
     <li><a href="index.html">Home</a></li>
-
     <li><a href="contact.html">Contact</a></li>
   </ul>
   <img src="logo.png" alt="Logo" style="width: 50px; height: 50px;">
-</nav>>
+</nav>
 
 <section class="about">
   <h1>About Ageflix Project</h1>
   <p>
-    Ageflix is an innovative project that uses AI to detect the user's age and recommend movies suitable for their age group.  
-    We aimed to create a safe and personalized movie experience for kids, adults, and seniors.  
-    Our team worked collaboratively to design the interface, integrate Teachable Machine for age detection, and build an interactive platform similar to Netflix.
+    We are Grade 6A students—Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed—working together to develop AGEFLIX.
+
+The idea was initiated by Ms. Angie Jamal, inspired by Netflix-style recommendations and the concerns of parents about age-appropriate content. The project was developed under her supervision and guidance.
+
+Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance, with each member contributing to building and presenting the project.
   </p>
 
-  <h2 style="color:#e50914; margin-bottom:20px;">Meet the Team</h2>
+  <h2>Meet the Team</h2>
   <div class="carousel-container">
     <div class="carousel-track" id="carouselTrack">
       <div class="carousel-card">
@@ -122,4 +125,3 @@
 
 </body>
 </html>
-
