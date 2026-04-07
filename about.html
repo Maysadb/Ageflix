@@ -23,14 +23,12 @@
 
   /* Carousel */
   .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 40px 0; perspective: 1000px; }
-  .carousel-track { display: flex; gap: 20px; transition: transform 0.3s; }
-  .carousel-card { min-width: 200px; max-width: 200px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 5px 15px rgba(0,0,0,0.5); }
-  .carousel-card img { width: 100%; height: 280px; object-fit: cover; transition: transform 0.3s; }
-  .carousel-card .overlay { position: absolute; bottom: 0; left: 0; width: 100%; height: 0; background: rgba(0,0,0,0.7); color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; padding: 10px; overflow: hidden; transition: height 0.3s; }
-  .carousel-card:hover .overlay { height: 100%; }
+  .carousel-track { display: flex; gap: 30px; transition: transform 0.3s; }
+  .carousel-card { min-width: 220px; max-width: 220px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 5px 20px rgba(0,0,0,0.5); }
+  .carousel-card img { width: 100%; height: 320px; object-fit: cover; transition: transform 0.3s; }
 
-  @media(max-width:1024px){ .carousel-card { min-width: 180px; max-width: 180px; } .carousel-card img { height: 240px; } }
-  @media(max-width:768px){ .carousel-card { min-width: 150px; max-width: 150px; } .carousel-card img { height: 200px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
+  @media(max-width:1024px){ .carousel-card { min-width: 200px; max-width: 200px; } .carousel-card img { height: 280px; } }
+  @media(max-width:768px){ .carousel-card { min-width: 160px; max-width: 160px; } .carousel-card img { height: 220px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
 </style>
 </head>
 <body>
@@ -53,11 +51,11 @@
 
   <div class="carousel-container" id="carouselContainer">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=11"><div class="overlay"><h3>Student 1</h3><p>Front-end Developer</p></div></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=12"><div class="overlay"><h3>Student 2</h3><p>Back-end Developer</p></div></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=13"><div class="overlay"><h3>Student 3</h3><p>UI/UX Designer</p></div></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=14"><div class="overlay"><h3>Maysa</h3><p>Project Lead</p></div></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=15"><div class="overlay"><h3>Student 5</h3><p>Tester</p></div></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=11"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=12"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=13"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=14"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=15"></div>
     </div>
   </div>
 </section>
@@ -67,7 +65,7 @@ const track = document.getElementById('carouselTrack');
 const container = document.getElementById('carouselContainer');
 const cards = Array.from(track.children);
 
-let speed = 0.1; // حركة بطيئة جدًا
+let speed = 0.05; // حركة بطيئة جدًا
 let offset = 0;
 
 // نسخ العناصر لتكرار سلس
@@ -81,7 +79,7 @@ function animateCarousel(){
   }
   track.style.transform = `translateX(${offset}px)`;
 
-  // تحديث حجم الصور الوسطى
+  // تأثير Zoom على الصورة الوسطية
   const center = container.offsetWidth/2;
   allCards.forEach(card=>{
     const cardCenter = card.offsetLeft + card.offsetWidth/2 - offset;
@@ -96,7 +94,7 @@ function animateCarousel(){
 
 // توقف عند hover
 container.addEventListener('mouseenter', ()=> speed=0);
-container.addEventListener('mouseleave', ()=> speed=0.1);
+container.addEventListener('mouseleave', ()=> speed=0.05);
 
 animateCarousel();
 </script>
