@@ -32,12 +32,12 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 50px;
-    height: 50px;
-    background: rgba(156,15,46,0.7); /* #9C0F2E مع شفافية */
+    width: 35px;
+    height: 35px;
+    background: rgba(156,15,46,0.7);
     border-radius: 50%;
     color: #fff;
-    font-size: 30px;
+    font-size: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -49,6 +49,39 @@
   .carousel-arrow:hover { transform: translateY(-50%) scale(1.2); background: rgba(156,15,46,1); }
   .carousel-arrow.left { left: 10px; }
   .carousel-arrow.right { right: 10px; }
+
+  /* Popup Zoom */
+  #popupZoom {
+    position: fixed;
+    top:0; left:0;
+    width:100%; height:100%;
+    background: rgba(0,0,0,0.9);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 2000;
+  }
+  #popupZoom img {
+    max-width: 90%;
+    max-height: 90%;
+    border-radius: 15px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.8);
+  }
+  #popupZoom .closeBtn {
+    position: absolute;
+    top:20px;
+    right:20px;
+    font-size: 28px;
+    color: #fff;
+    cursor: pointer;
+    background: rgba(156,15,46,0.7);
+    border-radius: 50%;
+    width: 40px; height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  #popupZoom .closeBtn:hover { background: rgba(156,15,46,1); transform: scale(1.2); }
 
   @media(max-width:1200px){ .carousel-card { min-width: 220px; max-width: 220px; height: 220px; } }
   @media(max-width:768px){ .carousel-card { min-width: 180px; max-width: 180px; height: 180px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
@@ -87,12 +120,18 @@
   </div>
 </section>
 
+<!-- Popup Zoom -->
+<div id="popupZoom">
+  <span class="closeBtn">&times;</span>
+  <img src="" alt="Zoomed Image">
+</div>
+
 <script>
 const track = document.getElementById('carouselTrack');
 const container = document.getElementById('carouselContainer');
 const cards = Array.from(track.children);
 
-let speed = 0.08; // سرعة الحركة
+let speed = 0.08;
 let offset = 0;
 
 // نسخ العناصر لتكرار سلس
@@ -101,12 +140,10 @@ const allCards = Array.from(track.children);
 
 function animateCarousel(){
   offset -= speed;
-  if(Math.abs(offset) >= track.scrollWidth/2){
-    offset = 0;
-  }
+  if(Math.abs(offset) >= track.scrollWidth/2){ offset = 0; }
   track.style.transform = `translateX(${offset}px)`;
 
-  // Zoom على الصورة الوسطية
+  // Zoom للصورة الوسطية
   const center = container.offsetWidth/2;
   allCards.forEach(card=>{
     const cardCenter = card.offsetLeft + card.offsetWidth/2 - offset;
@@ -124,8 +161,29 @@ container.addEventListener('mouseenter', ()=> speed=0);
 container.addEventListener('mouseleave', ()=> speed=0.08);
 
 // أسهم التنقل
-document.getElementById('arrowLeft').addEventListener('click', ()=> offset += 260); // تحريك يمين
-document.getElementById('arrowRight').addEventListener('click', ()=> offset -= 260); // تحريك يسار
+document.getElementById('arrowLeft').addEventListener('click', ()=> offset += 260);
+document.getElementById('arrowRight').addEventListener('click', ()=> offset -= 260);
+
+// Zoom عند الضغط على الصورة
+const popup = document.getElementById('popupZoom');
+const popupImg = popup.querySelector('img');
+const closeBtn = popup.querySelector('.closeBtn');
+
+cards.forEach(card=>{
+  card.addEventListener('click', ()=>{
+    popup.style.display = 'flex';
+    popupImg.src = card.querySelector('img').src;
+  });
+});
+
+closeBtn.addEventListener('click', ()=>{
+  popup.style.display = 'none';
+  popupImg.src = '';
+});
+
+popup.addEventListener('click', e=>{
+  if(e.target === popup) { popup.style.display = 'none'; popupImg.src = ''; }
+});
 
 animateCarousel();
 </script>
