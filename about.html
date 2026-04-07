@@ -23,12 +23,35 @@
 
   /* Carousel */
   .carousel-container { position: relative; width: 100%; overflow: hidden; padding: 40px 0; perspective: 1000px; }
-  .carousel-track { display: flex; gap: 40px; transition: transform 0.3s; }
-  .carousel-card { min-width: 240px; max-width: 240px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
-  .carousel-card img { width: 100%; height: 360px; object-fit: cover; transition: transform 0.3s; }
+  .carousel-track { display: flex; gap: 30px; transition: transform 0.3s; }
+  .carousel-card { min-width: 250px; max-width: 250px; height: 250px; border-radius: 15px; overflow: hidden; position: relative; cursor: pointer; transition: transform 0.3s, z-index 0.3s; box-shadow: 0 8px 25px rgba(0,0,0,0.6); }
+  .carousel-card img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.3s; }
 
-  @media(max-width:1200px){ .carousel-card { min-width: 200px; max-width: 200px; } .carousel-card img { height: 320px; } }
-  @media(max-width:768px){ .carousel-card { min-width: 160px; max-width: 160px; } .carousel-card img { height: 240px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
+  /* Navigation Arrows */
+  .carousel-arrow {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 50px;
+    height: 50px;
+    background: rgba(156,15,46,0.7); /* #9C0F2E مع شفافية */
+    border-radius: 50%;
+    color: #fff;
+    font-size: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    z-index: 1000;
+    transition: transform 0.3s, background 0.3s;
+    user-select: none;
+  }
+  .carousel-arrow:hover { transform: translateY(-50%) scale(1.2); background: rgba(156,15,46,1); }
+  .carousel-arrow.left { left: 10px; }
+  .carousel-arrow.right { right: 10px; }
+
+  @media(max-width:1200px){ .carousel-card { min-width: 220px; max-width: 220px; height: 220px; } }
+  @media(max-width:768px){ .carousel-card { min-width: 180px; max-width: 180px; height: 180px; } section.about h1 { font-size: 24px; } section.about p { font-size: 16px; }
 </style>
 </head>
 <body>
@@ -51,12 +74,16 @@
 
   <div class="carousel-container" id="carouselContainer">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=11"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=12"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=13"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=14"></div>
-      <div class="carousel-card"><img src="https://picsum.photos/400/300?random=15"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/250/250?random=11"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/250/250?random=12"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/250/250?random=13"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/250/250?random=14"></div>
+      <div class="carousel-card"><img src="https://picsum.photos/250/250?random=15"></div>
     </div>
+
+    <!-- الأسهم -->
+    <div class="carousel-arrow left" id="arrowLeft">&#10094;</div>
+    <div class="carousel-arrow right" id="arrowRight">&#10095;</div>
   </div>
 </section>
 
@@ -65,7 +92,7 @@ const track = document.getElementById('carouselTrack');
 const container = document.getElementById('carouselContainer');
 const cards = Array.from(track.children);
 
-let speed = 0.03; // حركة بطيئة جدًا
+let speed = 0.08; // سرعة الحركة
 let offset = 0;
 
 // نسخ العناصر لتكرار سلس
@@ -79,12 +106,12 @@ function animateCarousel(){
   }
   track.style.transform = `translateX(${offset}px)`;
 
-  // تأثير Zoom على الصورة الوسطية
+  // Zoom على الصورة الوسطية
   const center = container.offsetWidth/2;
   allCards.forEach(card=>{
     const cardCenter = card.offsetLeft + card.offsetWidth/2 - offset;
     const distance = Math.abs(center - cardCenter);
-    const scale = Math.max(0.7, 1 - distance/1000); // تعديل للحصول على تأثير أوسع
+    const scale = Math.max(0.7, 1 - distance/1000);
     card.style.transform = `scale(${scale})`;
     card.style.zIndex = Math.floor(scale*100);
   });
@@ -94,7 +121,11 @@ function animateCarousel(){
 
 // توقف عند hover
 container.addEventListener('mouseenter', ()=> speed=0);
-container.addEventListener('mouseleave', ()=> speed=0.03);
+container.addEventListener('mouseleave', ()=> speed=0.08);
+
+// أسهم التنقل
+document.getElementById('arrowLeft').addEventListener('click', ()=> offset += 260); // تحريك يمين
+document.getElementById('arrowRight').addEventListener('click', ()=> offset -= 260); // تحريك يسار
 
 animateCarousel();
 </script>
