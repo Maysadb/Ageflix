@@ -67,7 +67,7 @@ const track = document.getElementById('carouselTrack');
 const container = document.getElementById('carouselContainer');
 const cards = Array.from(track.children);
 
-let speed = 0.5;
+let speed = 0.1; // حركة بطيئة جدًا
 let offset = 0;
 
 // نسخ العناصر لتكرار سلس
@@ -94,8 +94,9 @@ function animateCarousel(){
   requestAnimationFrame(animateCarousel);
 }
 
+// توقف عند hover
 container.addEventListener('mouseenter', ()=> speed=0);
-container.addEventListener('mouseleave', ()=> speed=0.5);
+container.addEventListener('mouseleave', ()=> speed=0.1);
 
 animateCarousel();
 </script>
