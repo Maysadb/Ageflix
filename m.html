@@ -17,26 +17,56 @@
   .navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; transition: 0.3s; }
   .navbar ul li a:hover { color: #9C0F2E; }
 
-  /* Slider */
+  /* Slider Wrapper */
+  .slider-container {
+    max-width: 95%;
+    margin: 30px auto;
+    position: relative;
+  }
+
   .slider {
     position: relative;
     overflow: hidden;
-    max-width: 95%;
-    margin: 30px auto;
     height: 450px;
     border: 2px solid #333;
     border-radius: 8px;
     background:#000;
   }
+
   .slide { position:absolute; width:100%; height:100%; opacity:0; transition:opacity 1s ease-in-out; }
   .slide.active { opacity:1; z-index:2; }
-  .slide img { width:100%; height:100%; object-fit: cover; }
+  
+  /* تعديل ظهور الصورة لتكون كاملة */
+  .slide img { 
+    width:100%; 
+    height:100%; 
+    object-fit: contain; 
+    background: #000;
+  }
 
-  /* Arrows & Dots */
-  .prev, .next { position:absolute; bottom: 20px; background: rgba(156, 15, 46, 0.7); color:#fff; border:none; padding:10px 15px; cursor:pointer; font-size:20px; border-radius:5px; z-index:10; }
-  .prev { left: 45%; transform: translateX(-50%); }
-  .next { right: 45%; transform: translateX(50%); }
-  .dots { position:absolute; bottom:60px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:10; }
+  /* تحريك الأسهم تحت البنر */
+  .slider-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    margin-top: 15px;
+  }
+
+  .prev, .next { 
+    background: #9C0F2E; 
+    color:#fff; 
+    border:none; 
+    padding:10px 25px; 
+    cursor:pointer; 
+    font-size:18px; 
+    border-radius:5px; 
+    transition: 0.3s;
+  }
+  
+  .prev:hover, .next:hover { background: #7a0b24; transform: scale(1.1); }
+
+  .dots { display:flex; gap:8px; }
   .dot { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.3); cursor:pointer; }
   .dot.active { background: #9C0F2E; }
 
@@ -49,21 +79,26 @@
   .team-section h2 { font-size: 36px; color: #9C0F2E; margin-bottom: 20px; }
   .team-description { font-size: 18px; line-height: 1.8; color: #ccc; margin-bottom: 40px; }
   
-  /* Marquee (Moving Images) */
+  /* Marquee */
   .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; padding: 20px 0; background: #111; margin-bottom: 40px; }
   .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
   .marquee-content img { height: 150px; margin: 0 15px; border-radius: 10px; border: 2px solid #333; }
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
 
-  /* Footer */
+  /* Footer - التعديل المطلوب للاسم والأيقونة */
   footer { background: #111; padding: 30px; text-align: center; border-top: 1px solid #333; margin-top: 50px; }
-  footer p { color: #888; font-size: 16px; margin-bottom: 10px; }
-  footer strong { color: #9C0F2E; }
-  .linkedin-icon { color: #0077b5; font-size: 28px; text-decoration: none; transition: 0.3s; display: inline-block; margin-top: 5px; }
-  .linkedin-icon:hover { color: #9C0F2E; transform: scale(1.2); }
+  .footer-link { 
+    text-decoration: none; 
+    color: #888; 
+    font-size: 18px; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 10px; 
+    transition: 0.3s;
+  }
+  .footer-link strong { color: #9C0F2E; }
+  .footer-link i { color: #0077b5; font-size: 24px; }
+  .footer-link:hover { transform: scale(1.05); opacity: 0.8; }
 
   /* Popup Styles */
   #popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column; }
@@ -72,7 +107,7 @@
   .loader { border:5px solid #333; border-top:5px solid #9C0F2E; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; margin: 20px auto; }
   @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 
-  @media(max-width:768px){ .slider { height:300px; } .prev { left: 40%; } .next { right: 40%; } }
+  @media(max-width:768px){ .slider { height:300px; } }
 </style>
 </head>
 <body>
@@ -86,13 +121,18 @@
   <img src="logo.png" alt="Logo" style="width: 50px; height: 50px;">
 </nav>
 
-<div class="slider">
-  <div class="slide active"><img src="ba1.png" alt="Banner 1"></div>
-  <div class="slide"><img src="ba2.png" alt="Banner 2"></div>
-  <div class="slide"><img src="ba3.png" alt="Banner 3"></div>
-  <button class="prev">&#10094;</button>
-  <button class="next">&#10095;</button>
-  <div class="dots"></div>
+<div class="slider-container">
+  <div class="slider">
+    <div class="slide active"><img src="ba1.png" alt="Banner 1"></div>
+    <div class="slide"><img src="ba2.png" alt="Banner 2"></div>
+    <div class="slide"><img src="ba3.png" alt="Banner 3"></div>
+  </div>
+  
+  <div class="slider-controls">
+    <button class="prev"><i class="fas fa-chevron-left"></i></button>
+    <div class="dots"></div>
+    <button class="next"><i class="fas fa-chevron-right"></i></button>
+  </div>
 </div>
 
 <button id="startBtn">Start Camera & Detect Age</button>
@@ -102,7 +142,7 @@
   <p class="team-description">
     We are Grade 6A students—<strong>Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed</strong>—working together to develop AGEFLIX. 
     The idea was initiated by <strong>Ms. Angie Jamal</strong>, inspired by Netflix-style recommendations and the concerns of parents about age-appropriate content. 
-    The project was developed under her supervision and guidance. Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance, with each member contributing to building and presenting the project.
+    The project was developed under her supervision and guidance. Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance.
   </p>
 
   <div class="marquee-container">
@@ -118,8 +158,8 @@
 </section>
 
 <footer>
-  <p>Programming & Web Design by: <strong>Maysa Dbsawi</strong></p>
-  <a href="https://www.linkedin.com/in/maysa-dbsawi-a006331a7" target="_blank" class="linkedin-icon">
+  <a href="https://www.linkedin.com/in/maysa-dbsawi-a006331a7" target="_blank" class="footer-link">
+    <span>Programming & Web Design by: <strong>Maysa Dbsawi</strong></span>
     <i class="fab fa-linkedin"></i>
   </a>
 </footer>
@@ -127,6 +167,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 <script>
+// ... نفس كود JavaScript السابق الخاص بـ Teachable Machine والـ Slider ...
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
 let model, webcam, maxPredictions;
 
@@ -135,7 +176,6 @@ async function init() {
   const metadataURL = URL + "metadata.json";
   model = await tmImage.load(modelURL, metadataURL);
   maxPredictions = model.getTotalClasses();
-
   webcam = new tmImage.Webcam(400, 300, true);
   await webcam.setup();
   await webcam.play();
@@ -158,29 +198,19 @@ function showPopupAnalysis(){
   `;
   document.body.appendChild(popup);
   document.getElementById("webcam-container").appendChild(webcam.canvas);
-
   let totalTime = 15;
   let seconds = totalTime;
   const countdownFill = document.getElementById("countdown-fill");
-  const countdownText = document.getElementById("countdown-text");
-
   const interval = setInterval(async () => {
     await webcam.update();
     const prediction = await model.predict(webcam.canvas);
     const labelContainer = document.getElementById("label-container");
     labelContainer.innerHTML = "";
-    prediction.forEach(p => {
-      labelContainer.innerHTML += `<p>${p.className}: ${(p.probability*100).toFixed(1)}%</p>`;
-    });
-
+    prediction.forEach(p => { labelContainer.innerHTML += `<p>${p.className}: ${(p.probability*100).toFixed(1)}%</p>`; });
     countdownFill.style.width = `${((totalTime - seconds) / totalTime) * 100}%`;
-    countdownText.textContent = `${seconds}s remaining`;
-
+    document.getElementById("countdown-text").textContent = `${seconds}s remaining`;
     seconds--;
-    if(seconds < 0){
-      clearInterval(interval);
-      showResult(prediction);
-    }
+    if(seconds < 0){ clearInterval(interval); showResult(prediction); }
   }, 1000);
 }
 
@@ -194,12 +224,7 @@ function showResult(prediction){
     </div>
   `;
   document.getElementById("nextBtn").addEventListener("click", () => {
-    popup.innerHTML = `
-      <div class="popup-content">
-        <div class="loader"></div>
-        <p>Loading your suitable movies...</p>
-      </div>
-    `;
+    popup.innerHTML = `<div class="popup-content"><div class="loader"></div><p>Loading suitable movies...</p></div>`;
     setTimeout(() => {
       let label = best.className.toLowerCase();
       if(label.includes("kid")) window.location.href = "kids.html";
@@ -221,7 +246,6 @@ function showSlide(index){
   if(index < 0) slideIndex = slides.length - 1;
   else if(index >= slides.length) slideIndex = 0;
   else slideIndex = index;
-
   slides.forEach((s,i) => {
     s.classList.remove("active");
     if(dotsContainer.children[i]) dotsContainer.children[i].classList.remove("active");
