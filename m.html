@@ -114,10 +114,7 @@
 
 <nav class="navbar">
   <div class="logo">AGEFLIX</div>
-  <ul>
-    <li><a href="about.html">About</a></li>
-    <li><a href="contact.html">Contact</a></li>
-  </ul>
+
   <img src="logo.png" alt="Logo" style="width: 50px; height: 50px;">
 </nav>
 
@@ -136,6 +133,42 @@
 </div>
 
 <button id="startBtn">Start Camera & Detect Age</button>
+<style>
+  /* ... الكود السابق ... */
+
+  /* Marquee (Moving Images) */
+  .marquee-container { 
+    overflow: hidden; 
+    white-space: nowrap; 
+    width: 100%; 
+    padding: 20px 0; 
+    background: #111; 
+    margin-bottom: 40px; 
+  }
+
+  .marquee-content { 
+    display: inline-block; 
+    animation: marquee 20s linear infinite; 
+  }
+
+  .marquee-content img { 
+    /* تعديل المقاسات لتصبح 400 في 400 */
+    width: 400px; 
+    height: 400px; 
+    margin: 0 15px; 
+    border-radius: 10px; 
+    border: 2px solid #333; 
+    /* ضمان عدم تشوه الصورة داخل المربع */
+    object-fit: cover; 
+  }
+
+  @keyframes marquee { 
+    0% { transform: translateX(0); } 
+    100% { transform: translateX(-50%); } 
+  }
+
+  /* ... باقي الكود ... */
+</style>
 
 <section class="team-section">
   <h2>Meet the Team</h2>
@@ -147,12 +180,14 @@
 
   <div class="marquee-container">
     <div class="marquee-content">
-      <img src="ba1.png" alt="Work 1">
-      <img src="ba2.png" alt="Work 2">
-      <img src="ba3.png" alt="Work 3">
-      <img src="ba1.png" alt="Work 1">
-      <img src="ba2.png" alt="Work 2">
-      <img src="ba3.png" alt="Work 3">
+      <img src="t1.JPG" alt="Work 1">
+      <img src="t2.JPG" alt="Work 2">
+      <img src="t3.JPG" alt="Work 3">
+      <img src="t4.JPG" alt="Work 4">
+      <img src="t1.JPG" alt="Work 1">
+      <img src="t2.JPG" alt="Work 2">
+      <img src="t3.JPG" alt="Work 3">
+      <img src="t4.JPG" alt="Work 4">
     </div>
   </div>
 </section>
