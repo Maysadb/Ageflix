@@ -5,113 +5,77 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Ageflix - Home</title>
 <style>
-  * { box-sizing:border-box; margin:0; padding:0; font-family:Arial, sans-serif; }
-  body { background:#000; color:#fff; }
+  * { box-sizing:border-box; margin:0; padding:0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background:#000; color:#fff; overflow-x: hidden; }
 
   /* Navbar */
-  .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 20px; background:#111; }
-  .logo { color:#9C0F2E; font-size:28px; font-weight:bold; }
+  .navbar { display:flex; justify-content:space-between; align-items:center; padding:10px 40px; background:#111; border-bottom: 2px solid #9C0F2E; }
+  .logo { color:#E50914; font-size:32px; font-weight:bold; letter-spacing: 2px; }
   .navbar ul { display:flex; list-style:none; }
   .navbar ul li { margin:0 15px; }
-  .navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; }
+  .navbar ul li a { color:#fff; text-decoration:none; font-weight:bold; transition: 0.3s; }
+  .navbar ul li a:hover { color: #E50914; }
 
   /* Slider */
   .slider {
     position: relative;
     overflow: hidden;
-    max-width: 90%;
+    max-width: 95%;
     margin: 30px auto;
-    height: 500px; /* طول البنر مناسب */
-    border: 4px solid #9C0F2E; /* الإطار باللون المطلوب */
-    border-radius: 12px;
+    height: 450px;
+    border: 2px solid #333;
+    border-radius: 8px;
     background:#000;
   }
   .slide { position:absolute; width:100%; height:100%; opacity:0; transition:opacity 1s ease-in-out; }
   .slide.active { opacity:1; z-index:2; }
-  .slide img {
-    width:100%;
-    height:100%;
-    object-fit: contain; /* الصورة تظهر كاملة داخل الإطار */
-  }
+  .slide img { width:100%; height:100%; object-fit: cover; }
 
-  /* الأسهم */
-  .prev, .next {
-    position:absolute;
-    top: auto;
-    bottom: 20px;
-    transform: translateY(0);
-    background: rgba(0,0,0,0.5);
-    color:#9C0F2E;
-    border:none;
-    padding:10px;
-    cursor:pointer;
-    font-size:20px;
-    border-radius:50%;
-    z-index:3;
-  }
-  .prev { left:45%; }
-  .next { right:45%; }
+  /* Arrows & Dots */
+  .prev, .next { position:absolute; bottom: 20px; background: rgba(229, 9, 20, 0.7); color:#fff; border:none; padding:10px 15px; cursor:pointer; font-size:20px; border-radius:5px; z-index:10; }
+  .prev { left: 45%; transform: translateX(-50%); }
+  .next { right: 45%; transform: translateX(50%); }
+  .dots { position:absolute; bottom:60px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:10; }
+  .dot { width:12px; height:12px; border-radius:50%; background:rgba(255,255,255,0.3); cursor:pointer; }
+  .dot.active { background:#E50914; }
 
-  /* النقاط */
-  .dots { position:absolute; bottom:10px; left:50%; transform:translateX(-50%); display:flex; gap:8px; z-index:3; }
-  .dot { width:12px; height:12px; border-radius:50%; background-color:rgba(255,255,255,0.5); cursor:pointer; }
-  .dot.active { background:#9C0F2E; }
+  /* Start Button */
+  #startBtn { display:block; margin:40px auto; padding:15px 40px; font-size:20px; font-weight:bold; background:#E50914; color:#fff; border:none; border-radius:4px; cursor:pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4); }
+  #startBtn:hover { background: #b20710; transform: scale(1.05); }
 
-  /* زر الكاميرا */
-  #startBtn { display:block; margin:20px auto; padding:12px 30px; font-size:18px; background:#9C0F2E; color:#fff; border:none; border-radius:5px; cursor:pointer; }
-
-  /* Popup */
-  #popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column; }
-  .popup-content { background:#111; border:2px solid #9C0F2E; padding:30px 50px; border-radius:10px; text-align:center; color:#fff; max-width:90%; width:450px; }
-  .popup-content h2 { font-size:28px; margin-bottom:15px; }
-  #nextBtn { background:#9C0F2E; color:#fff; border:none; padding:12px 40px; border-radius:5px; font-size:18px; cursor:pointer; }
-  .loader { border:6px solid #f3f3f3; border-top:6px solid #9C0F2E; border-radius:50%; width:70px; height:70px; animation:spin 1s linear infinite; margin-bottom:20px; }
-  @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
-  #countdown-bar { width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden; }
-  #countdown-fill { width:0%; height:100%; background:#9C0F2E; transition:width 1s linear; }
-  #countdown-text { margin-top:8px; font-size:16px; color:#aaa; }
-  #label-container { font-size:18px; margin-top:10px; text-align:left; }
-  #webcam-container video, #webcam-container canvas {
-    border:2px solid #9C0F2E;
-    border-radius:10px;
-    width: 100%;
-    max-width: 300px;
-    height: auto;
+  /* Team Section */
+  .team-section { padding: 60px 20px; background: #000; text-align: center; max-width: 1000px; margin: 0 auto; }
+  .team-section h2 { font-size: 36px; color: #E50914; margin-bottom: 20px; }
+  .team-description { font-size: 18px; line-height: 1.8; color: #ccc; margin-bottom: 40px; }
+  
+  /* Marquee (Moving Images) */
+  .marquee-container { overflow: hidden; white-space: nowrap; width: 100%; padding: 20px 0; background: #111; margin-bottom: 40px; }
+  .marquee-content { display: inline-block; animation: marquee 20s linear infinite; }
+  .marquee-content img { height: 150px; margin: 0 15px; border-radius: 10px; border: 2px solid #333; }
+  @keyframes marquee {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
   }
 
   /* Footer */
-  footer {
-    background:#111;
-    color:#fff;
-    text-align:center;
-    padding:15px 0;
-    border-top:3px solid #9C0F2E;
-    font-size:14px;
-  }
-  footer a {
-    margin-left:8px;
-    color:#9C0F2E;
-    text-decoration:none;
-    vertical-align:middle;
-    transition: transform 0.2s;
-  }
-  footer a:hover { transform: scale(1.2); }
+  footer { background: #111; padding: 20px; text-align: center; border-top: 1px solid #333; margin-top: 50px; }
+  footer p { color: #888; font-size: 16px; }
+  footer strong { color: #E50914; }
 
-  footer svg { vertical-align:middle; }
+  /* Popup Styles (Same as original) */
+  #popup { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.95); display:flex; justify-content:center; align-items:center; z-index:9999; flex-direction:column; }
+  .popup-content { background:#111; border:2px solid #E50914; padding:30px; border-radius:10px; text-align:center; color:#fff; width:90%; max-width:450px; }
+  #webcam-container video, #webcam-container canvas { border:2px solid #E50914; border-radius:8px; width: 100%; margin-bottom: 15px; }
+  .loader { border:5px solid #333; border-top:5px solid #E50914; border-radius:50%; width:50px; height:50px; animation:spin 1s linear infinite; margin: 20px auto; }
+  @keyframes spin {0%{transform:rotate(0deg);}100%{transform:rotate(360deg);}}
 
-  /* Responsive */
-  @media(max-width:768px){
-    .slider { height:400px; }
-  }
-  @media(max-width:480px){
-    .slider { height:300px; }
-  }
+  @media(max-width:768px){ .slider { height:300px; } .prev { left: 40%; } .next { right: 40%; } }
 </style>
 </head>
 <body>
 
 <nav class="navbar">
-  <div class="logo">Ageflix</div>
+  <div class="logo">AGEFLIX</div>
   <ul>
     <li><a href="about.html">About</a></li>
     <li><a href="contact.html">Contact</a></li>
@@ -120,10 +84,9 @@
 </nav>
 
 <div class="slider">
-  <div class="slide active"><img src="1.jpeg" alt="Banner 1"></div>
-  <div class="slide"><img src="ba1.png" alt="Banner 2"></div>
-  <div class="slide"><img src="ba2.png" alt="Banner 3"></div>
-  <div class="slide"><img src="ba3.png" alt="Banner 4"></div>
+  <div class="slide active"><img src="ba1.png" alt="Banner 1"></div>
+  <div class="slide"><img src="ba2.png" alt="Banner 2"></div>
+  <div class="slide"><img src="ba3.png" alt="Banner 3"></div>
   <button class="prev">&#10094;</button>
   <button class="next">&#10095;</button>
   <div class="dots"></div>
@@ -131,19 +94,34 @@
 
 <button id="startBtn">Start Camera & Detect Age</button>
 
-<!-- Footer -->
+<section class="team-section">
+  <h2>Meet the Team</h2>
+  <p class="team-description">
+    We are Grade 6A students—<strong>Ellen Alsahoree, Fawziah Almogherah, and Rouz Ahmed</strong>—working together to develop AGEFLIX. 
+    The idea was initiated by <strong>Ms. Angie Jamal</strong>, inspired by Netflix-style recommendations and the concerns of parents about age-appropriate content. 
+    The project was developed under her supervision and guidance. Our team collaborated to collect data, train the AI model using Teachable Machine, and test its performance, with each member contributing to building and presenting the project.
+  </p>
+
+  <div class="marquee-container">
+    <div class="marquee-content">
+      <img src="ba1.png" alt="Work 1">
+      <img src="ba2.png" alt="Work 2">
+      <img src="ba3.png" alt="Work 3">
+      <img src="ba1.png" alt="Work 1">
+      <img src="ba2.png" alt="Work 2">
+      <img src="ba3.png" alt="Work 3">
+    </div>
+  </div>
+</section>
+
 <footer>
-  <span>برمجة الموقع من خلال <strong>Maysa Dbsawi</strong></span>
-  <a href="https://www.linkedin.com/in/your-linkedin-profile/" target="_blank">
-    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="#9C0F2E" viewBox="0 0 24 24">
-      <path d="M19 0h-14c-2.76 0-5 2.24-5 5v14c0 2.762 2.24 5 5 5h14c2.762 0 5-2.238 5-5v-14c0-2.76-2.238-5-5-5zm-11 19h-3v-10h3v10zm-1.5-11.25c-.966 0-1.75-.783-1.75-1.75s.784-1.75 1.75-1.75 1.75.783 1.75 1.75-.784 1.75-1.75 1.75zm13.5 11.25h-3v-5.5c0-1.379-1.121-2.5-2.5-2.5s-2.5 1.121-2.5 2.5v5.5h-3v-10h3v1.354c.794-1.155 2.211-1.354 3.5-1.354 2.481 0 4.5 2.019 4.5 4.5v5.5z"/>
-    </svg>
-  </a>
+  <p>برمجة و تصميم: <strong>ميساء</strong></p>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.21.0/dist/tf.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8.4/dist/teachablemachine-image.min.js"></script>
 <script>
+// Logic for AI and Popups remains the same as your original script
 const URL = "https://teachablemachine.withgoogle.com/models/UujRQ_OS4/";
 let model, webcam, maxPredictions;
 
@@ -156,7 +134,6 @@ async function init() {
   webcam = new tmImage.Webcam(400, 300, true);
   await webcam.setup();
   await webcam.play();
-
   showPopupAnalysis();
 }
 
@@ -168,8 +145,10 @@ function showPopupAnalysis(){
       <h2>Analyzing your face...</h2>
       <div id="webcam-container"></div>
       <div id="label-container"></div>
-      <div id="countdown-bar"><div id="countdown-fill"></div></div>
-      <div id="countdown-text">15s remaining</div>
+      <div id="countdown-bar" style="width:100%; height:10px; background:#333; border-radius:5px; margin-top:15px; overflow:hidden;">
+          <div id="countdown-fill" style="width:0%; height:100%; background:#E50914; transition:width 1s linear;"></div>
+      </div>
+      <div id="countdown-text" style="margin-top:8px;">15s remaining</div>
     </div>
   `;
   document.body.appendChild(popup);
@@ -179,12 +158,11 @@ function showPopupAnalysis(){
   let seconds = totalTime;
   const countdownFill = document.getElementById("countdown-fill");
   const countdownText = document.getElementById("countdown-text");
-  const labelContainer = document.getElementById("label-container");
 
   const interval = setInterval(async () => {
     await webcam.update();
     const prediction = await model.predict(webcam.canvas);
-
+    const labelContainer = document.getElementById("label-container");
     labelContainer.innerHTML = "";
     prediction.forEach(p => {
       labelContainer.innerHTML += `<p>${p.className}: ${(p.probability*100).toFixed(1)}%</p>`;
@@ -206,8 +184,8 @@ function showResult(prediction){
   const popup = document.getElementById("popup");
   popup.innerHTML = `
     <div class="popup-content">
-      <h2>Your age group is <span>${best.className}</span></h2>
-      <button id="nextBtn">Next ➜</button>
+      <h2>Your age group is <span style="color:#E50914">${best.className}</span></h2>
+      <button id="nextBtn" style="background:#E50914; color:#fff; border:none; padding:10px 30px; border-radius:4px; cursor:pointer; margin-top:20px;">Next ➜</button>
     </div>
   `;
   document.getElementById("nextBtn").addEventListener("click", () => {
@@ -218,9 +196,10 @@ function showResult(prediction){
       </div>
     `;
     setTimeout(() => {
-      if(best.className.toLowerCase().includes("kid")) window.location.href = "kids.html";
-      else if(best.className.toLowerCase().includes("adult")) window.location.href = "adult.html";
-      else if(best.className.toLowerCase().includes("senior")) window.location.href = "senior.html";
+      let label = best.className.toLowerCase();
+      if(label.includes("kid")) window.location.href = "kids.html";
+      else if(label.includes("adult")) window.location.href = "adult.html";
+      else if(label.includes("senior")) window.location.href = "senior.html";
       else window.location.reload();
     }, 3000);
   });
